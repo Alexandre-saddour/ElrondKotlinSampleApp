@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fr.asaddour.elrondkotlinsdk">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".SampleApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ElrondKotlinSdk">
+        <activity
+            android:name="fr.asaddour.elrondkotlinsdk.ui.home.HomeActivity"
+            android:label="@string/your_wallet"
+            android:theme="@style/Theme.ElrondKotlinSdk.NoActionBar">
+        </activity>
+
+        <activity android:name=".ui.createwallet.CreateWalletActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

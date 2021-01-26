@@ -1,0 +1,3 @@
+include ':erdkotlin'
+include ':app'
+rootProject.name = "ElrondKotlinSampleApp"
