@@ -1,7 +1,8 @@
 package com.elrond.erdkotlin
 
-import com.elrond.erdkotlin.data.ElrondClient
+import com.elrond.erdkotlin.data.api.ElrondClient
 import com.elrond.erdkotlin.data.account.AccountRepositoryImpl
+import com.elrond.erdkotlin.data.api.ElrondService
 import com.elrond.erdkotlin.data.networkconfig.NetworkConfigRepositoryImpl
 import com.elrond.erdkotlin.data.transaction.TransactionRepositoryImpl
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
@@ -20,8 +21,7 @@ object ErdSdk {
 
     fun getAccountUsecase() = GetAccountUsecase(accountRepository)
 
-    fun getNetworkConfigUsecase() =
-        GetNetworkConfigUsecase(NetworkConfigRepositoryImpl(elrondClient))
+    fun getNetworkConfigUsecase() = GetNetworkConfigUsecase(networkConfigRepository)
 
     fun sendTransactionUsecase() = SendTransactionUsecase(
         SignTransactionUsecase(),
@@ -31,8 +31,10 @@ object ErdSdk {
     fun getTransactionsUsecase() = GetAddressTransactionsUsecase(transactionRepository)
 
     private val elrondClient = ElrondClient(ElrondNetwork.DevNet.url())
-    private val accountRepository = AccountRepositoryImpl(elrondClient)
-    private val transactionRepository = TransactionRepositoryImpl(elrondClient)
+    private val elrondService = ElrondService(elrondClient)
+    private val networkConfigRepository = NetworkConfigRepositoryImpl(elrondService)
+    private val accountRepository = AccountRepositoryImpl(elrondService)
+    private val transactionRepository = TransactionRepositoryImpl(elrondService)
 }
 
 sealed class ElrondNetwork {

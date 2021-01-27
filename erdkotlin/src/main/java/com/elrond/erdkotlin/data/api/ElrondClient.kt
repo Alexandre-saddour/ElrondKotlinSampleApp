@@ -1,4 +1,4 @@
-package com.elrond.erdkotlin.data
+package com.elrond.erdkotlin.data.api
 
 import com.elrond.erdkotlin.Exceptions
 import com.google.gson.Gson
