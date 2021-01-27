@@ -6,6 +6,7 @@ import com.elrond.erdkotlin.data.networkconfig.NetworkConfigRepositoryImpl
 import com.elrond.erdkotlin.data.transaction.TransactionRepositoryImpl
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
+import com.elrond.erdkotlin.domain.transaction.GetAddressTransactionsUsecase
 import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
 import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 
@@ -13,21 +14,25 @@ import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 // We don't want to force the host app to use a specific library.
 object ErdSdk {
 
-    private val elrondClient = ElrondClient(ElrondNetwork.DevNet.url())
+    fun setNetwork(elrondNetwork: ElrondNetwork) {
+        elrondClient.url = elrondNetwork.url()
+    }
 
-    fun getAccountUsecase() = GetAccountUsecase(AccountRepositoryImpl(elrondClient))
+    fun getAccountUsecase() = GetAccountUsecase(accountRepository)
+
     fun getNetworkConfigUsecase() =
         GetNetworkConfigUsecase(NetworkConfigRepositoryImpl(elrondClient))
 
     fun sendTransactionUsecase() = SendTransactionUsecase(
         SignTransactionUsecase(),
-        TransactionRepositoryImpl(elrondClient)
+        transactionRepository
     )
 
-    fun setNetwork(elrondNetwork: ElrondNetwork) {
-        elrondClient.url = elrondNetwork.url()
-    }
+    fun getTransactionsUsecase() = GetAddressTransactionsUsecase(transactionRepository)
 
+    private val elrondClient = ElrondClient(ElrondNetwork.DevNet.url())
+    private val accountRepository = AccountRepositoryImpl(elrondClient)
+    private val transactionRepository = TransactionRepositoryImpl(elrondClient)
 }
 
 sealed class ElrondNetwork {
