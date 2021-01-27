@@ -19,7 +19,7 @@ class SendTransactionUsecase internal constructor(
             else -> signTransactionUsecase.execute(transaction, wallet)
         }
         return transactionRepository.sendTransaction(signedTransaction).let { sentTransaction ->
-            signedTransaction.copy(txHash = sentTransaction)
+            signedTransaction.copy(txHash = sentTransaction.hash)
         }
     }
 

@@ -10,6 +10,5 @@ internal interface TransactionRepository {
         Exceptions.CannotSerializeTransactionException::class,
         Exceptions.ProxyRequestException::class
     )
-    fun sendTransaction(transaction: Transaction): String
-
+    fun sendTransaction(transaction: Transaction): TransactionHash
 }

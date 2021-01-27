@@ -3,6 +3,7 @@ package com.elrond.erdkotlin.data.transaction
 import com.elrond.erdkotlin.data.ElrondClient
 import com.elrond.erdkotlin.Exceptions
 import com.elrond.erdkotlin.domain.transaction.Transaction
+import com.elrond.erdkotlin.domain.transaction.TransactionHash
 import com.elrond.erdkotlin.domain.transaction.TransactionRepository
 import java.io.IOException
 
@@ -14,11 +15,11 @@ internal class TransactionRepositoryImpl internal constructor(
         Exceptions.CannotSerializeTransactionException::class,
         Exceptions.ProxyRequestException::class
     )
-    override fun sendTransaction(transaction: Transaction): String {
+    override fun sendTransaction(transaction: Transaction): TransactionHash {
         val requestJson = transaction.serialize()
         val response: ElrondClient.ResponseBase<TransactionResponse> = elrondClient.doPost(
             "transaction/send", requestJson
         )
-        return requireNotNull(response.data).txHash
+        return TransactionHash(requireNotNull(response.data).txHash)
     }
 }
