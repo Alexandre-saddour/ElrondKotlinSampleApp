@@ -49,7 +49,7 @@ class Wallet(
         private const val BIP39_SALT_MODIFIER = "mnemonic"
         private const val BIP39_PBKDF2_ROUNDS = 2048
         private const val BIP32_SEED_MODIFIER = "ed25519 seed"
-        private const val HARDENED_OFFSET: Long = -0x80000000
+        private const val HARDENED_OFFSET: Long = 0x80000000
         private val ELROND_DERIVATION_PATH = longArrayOf(44, 508, 0, 0, 0)
 
         fun createFromPrivateKey(privateKey: ByteArray): Wallet {
