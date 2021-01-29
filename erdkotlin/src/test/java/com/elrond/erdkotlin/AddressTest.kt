@@ -1,7 +1,7 @@
 package com.elrond.erdkotlin
 
 
-import com.elrond.erdkotlin.domain.wallet.Address
+import com.elrond.erdkotlin.domain.wallet.models.Address
 import org.junit.Assert.*
 import org.junit.Test
 

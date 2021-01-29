@@ -10,7 +10,8 @@ import okhttp3.RequestBody
 import java.io.IOException
 
 internal class ElrondClient(
-    var url: String
+    var url: String,
+    val gson: Gson
 ) {
 
     private val httpClient = OkHttpClient()
@@ -45,7 +46,6 @@ internal class ElrondClient(
 
     companion object {
         private val JSON = MediaType.get("application/json; charset=utf-8")
-        private val gson = Gson()
     }
 
     class ResponseBase<T> {

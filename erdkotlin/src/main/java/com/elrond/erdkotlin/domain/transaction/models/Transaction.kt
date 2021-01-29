@@ -1,7 +1,7 @@
-package com.elrond.erdkotlin.domain.transaction
+package com.elrond.erdkotlin.domain.transaction.models
 
 import com.elrond.erdkotlin.Exceptions
-import com.elrond.erdkotlin.domain.wallet.Address
+import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.google.gson.GsonBuilder
 import java.math.BigInteger
 import java.nio.charset.StandardCharsets

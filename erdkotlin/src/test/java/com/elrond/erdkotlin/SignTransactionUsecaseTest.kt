@@ -2,7 +2,7 @@ package com.elrond.erdkotlin
 
 import com.elrond.erdkotlin.TestHelper.alicePrivateKey
 import com.elrond.erdkotlin.TestHelper.transactionWithData
-import com.elrond.erdkotlin.domain.wallet.Wallet
+import com.elrond.erdkotlin.domain.wallet.models.Wallet
 import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 import org.junit.Assert
 import org.junit.Test

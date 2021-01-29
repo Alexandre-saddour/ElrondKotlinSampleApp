@@ -6,13 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elrond.erdkotlin.Exceptions
-import com.elrond.erdkotlin.domain.wallet.Address
-import com.elrond.erdkotlin.domain.wallet.Wallet
-import com.elrond.erdkotlin.domain.account.Account
+import com.elrond.erdkotlin.domain.wallet.models.Address
+import com.elrond.erdkotlin.domain.wallet.models.Wallet
+import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
-import com.elrond.erdkotlin.domain.transaction.Transaction
+import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.LoadCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.extentions.launch

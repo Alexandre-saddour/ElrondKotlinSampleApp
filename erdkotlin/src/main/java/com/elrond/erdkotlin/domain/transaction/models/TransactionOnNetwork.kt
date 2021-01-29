@@ -1,6 +1,6 @@
-package com.elrond.erdkotlin.domain.transaction
+package com.elrond.erdkotlin.domain.transaction.models
 
-import com.elrond.erdkotlin.domain.wallet.Address
+import com.elrond.erdkotlin.domain.wallet.models.Address
 import java.math.BigInteger
 
 data class TransactionOnNetwork(

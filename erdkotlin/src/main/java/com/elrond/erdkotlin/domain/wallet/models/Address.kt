@@ -1,4 +1,4 @@
-package com.elrond.erdkotlin.domain.wallet
+package com.elrond.erdkotlin.domain.wallet.models
 
 import com.elrond.erdkotlin.Exceptions
 import org.bitcoinj.core.Bech32
