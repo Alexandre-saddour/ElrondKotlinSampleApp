@@ -16,5 +16,5 @@ dependencies {
     implementation 'org.bitcoinj:bitcoinj-core:0.15.8'
     implementation 'com.squareup.okhttp3:okhttp:3.14.2'
 
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
 }
