@@ -28,6 +28,4 @@ internal interface AccountRepository {
         Exceptions.AddressException::class
     )
     fun getAddressBalance(address: Address): BigInteger
-
-
 }
