@@ -11,6 +11,8 @@ data class Transaction(
     val sender: Address,
     val receiver: Address,
     val chainID: String,
+    val senderUsername: String = "",
+    val receiverUsername: String = "",
     val nonce: Long = 0,
     val value: BigInteger = 0.toBigInteger(),
     val gasPrice: Long = 1000000000,
@@ -38,6 +40,12 @@ data class Transaction(
             put("value", value.toString(10))
             put("receiver", receiver.bech32())
             put("sender", sender.bech32())
+            if (senderUsername.isNotEmpty()) {
+                put("senderUsername", encode(senderUsername))
+            }
+            if (receiverUsername.isNotEmpty()) {
+                put("receiverUsername", encode(receiverUsername))
+            }
             put("gasPrice", gasPrice)
             put("gasLimit", gasLimit)
             if (data.isNotEmpty()) {
@@ -52,6 +60,10 @@ data class Transaction(
     }
 
     fun getDataEncoded(): String {
+        return encode(data)
+    }
+
+    private fun encode(data: String): String {
         val dataAsBytes: ByteArray = data.toByteArray(StandardCharsets.UTF_8)
         val encodedAsBytes: ByteArray = Base64.encode(dataAsBytes)
         return String(encodedAsBytes)
