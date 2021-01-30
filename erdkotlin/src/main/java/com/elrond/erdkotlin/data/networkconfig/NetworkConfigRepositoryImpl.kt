@@ -7,7 +7,7 @@ import com.elrond.erdkotlin.domain.networkconfig.models.NetworkConfig
 import com.elrond.erdkotlin.domain.networkconfig.NetworkConfigRepository
 import java.io.IOException
 
-internal class NetworkConfigRepositoryImpl internal constructor(
+internal class NetworkConfigRepositoryImpl(
     private val elrondProxy: ElrondProxy
 ) : NetworkConfigRepository {
 

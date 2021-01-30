@@ -15,9 +15,15 @@ import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.google.gson.Gson
 
 internal class ElrondProxy(
-    private val elrondClient: ElrondClient,
-    private val gson: Gson
+    url: String
 ) {
+
+    private val gson = Gson()
+    private val elrondClient = ElrondClient(url, gson)
+
+    fun setUrl(url: String) {
+        elrondClient.url = url
+    }
 
     fun getNetworkConfig(): ElrondClient.ResponseBase<GetNetworkConfigResponse> {
         return elrondClient.doGet("network/config")

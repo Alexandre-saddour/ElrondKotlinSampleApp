@@ -8,7 +8,7 @@ import com.elrond.erdkotlin.domain.transaction.models.TransactionHash
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import java.io.IOException
 
-internal class TransactionRepositoryImpl internal constructor(
+internal class TransactionRepositoryImpl(
     private val elrondProxy: ElrondProxy
 ) : TransactionRepository {
     @Throws(

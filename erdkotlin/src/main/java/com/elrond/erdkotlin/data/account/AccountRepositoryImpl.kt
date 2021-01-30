@@ -7,7 +7,7 @@ import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.account.AccountRepository
 import java.math.BigInteger
 
-internal class AccountRepositoryImpl internal constructor(
+internal class AccountRepositoryImpl(
     private val elrondProxy: ElrondProxy
 ) : AccountRepository {
 
