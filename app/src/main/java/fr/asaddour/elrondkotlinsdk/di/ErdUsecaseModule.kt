@@ -2,8 +2,10 @@ package fr.asaddour.elrondkotlinsdk.di
 
 import com.elrond.erdkotlin.ErdSdk
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
+import com.elrond.erdkotlin.domain.account.GetAddressBalanceUsecase
+import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
-import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
+import com.elrond.erdkotlin.domain.transaction.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,9 +21,27 @@ object ErdUsecaseModule {
     fun provideGetAccountUsecase(): GetAccountUsecase = ErdSdk.getAccountUsecase()
 
     @Provides
-    fun provideSendTransactionUsecase(): SendTransactionUsecase = ErdSdk.sendTransactionUsecase()
+    fun provideGetAddressNonceUsecase(): GetAddressNonceUsecase = ErdSdk.getAddressNonceUsecase()
+
+    @Provides
+    fun provideGetAddressBalanceUsecase(): GetAddressBalanceUsecase = ErdSdk.getAddressBalanceUsecase()
 
     @Provides
     fun provideGetNetworkConfigUsecase(): GetNetworkConfigUsecase = ErdSdk.getNetworkConfigUsecase()
+
+    @Provides
+    fun provideSendTransactionUsecase(): SendTransactionUsecase = ErdSdk.sendTransactionUsecase()
+
+    @Provides
+    fun provideGetAddressTransactionsUsecase(): GetAddressTransactionsUsecase = ErdSdk.getTransactionsUsecase()
+
+    @Provides
+    fun providegetTransactionInfoUsecase(): GetTransactionInfoUsecase = ErdSdk.getTransactionInfoUsecase()
+
+    @Provides
+    fun providegetTransactionStatusUsecase(): GetTransactionStatusUsecase = ErdSdk.getTransactionStatusUsecase()
+
+    @Provides
+    fun provideEstimateCostOfTransactionUsecase(): EstimateCostOfTransactionUsecase = ErdSdk.estimateCostOfTransactionUsecase()
 
 }

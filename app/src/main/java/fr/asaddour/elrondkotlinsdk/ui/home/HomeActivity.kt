@@ -1,10 +1,12 @@
 package fr.asaddour.elrondkotlinsdk.ui.home
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,7 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initView()
         viewModel.viewState.observe(this) { viewState ->
+            Log.d("HomeViewModel", "viewState:$viewState")
             when (viewState) {
                 is HomeViewModel.HomeViewState.Content -> {
                     updateContent(viewState)
@@ -71,6 +74,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateContent(viewState: HomeViewModel.HomeViewState.Content) {
         TransitionManager.beginDelayedTransition(
             walletAddress.parent as ViewGroup,
@@ -82,10 +86,21 @@ class HomeActivity : AppCompatActivity() {
         walletBalance.setText(viewState.walletContent.balance)
         walletNonce.setText(viewState.walletContent.nonce)
 
-        sentTransactionTxField.text = when (viewState.sentTransaction){
-            null -> ""
-            else -> "${getString(R.string.tx)}: ${viewState.sentTransaction.tx}"
+
+        sentTransactionTxField.apply {
+            if (viewState.sentTransaction != null) {
+                text = "${getString(R.string.tx)}: ${viewState.sentTransaction.txHash}\n" +
+                        "${getString(R.string.status)}: ${viewState.sentTransaction.status}"
+                setOnClickListener {
+                    viewModel.fetchTransactionStatus(viewState.sentTransaction.txHash)
+                }
+            } else {
+                text = ""
+                setOnClickListener(null)
+            }
         }
+
+
     }
 
     override fun onResume() {
