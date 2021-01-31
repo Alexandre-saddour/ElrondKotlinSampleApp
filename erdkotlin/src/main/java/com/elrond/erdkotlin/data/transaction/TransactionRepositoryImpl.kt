@@ -2,6 +2,7 @@ package com.elrond.erdkotlin.data.transaction
 
 import com.elrond.erdkotlin.Exceptions
 import com.elrond.erdkotlin.data.api.ElrondProxy
+import com.elrond.erdkotlin.data.toDomain
 import com.elrond.erdkotlin.domain.transaction.TransactionRepository
 import com.elrond.erdkotlin.domain.transaction.models.*
 import com.elrond.erdkotlin.domain.transaction.models.TransactionHash
@@ -23,7 +24,7 @@ internal class TransactionRepositoryImpl(
 
     override fun getTransactions(address: Address): List<TransactionOnNetwork> {
         val response = elrondProxy.getAddressTransactions(address)
-        return requireNotNull(response.data)
+        return requireNotNull(response.data).transactions.map { it.toDomain() }
     }
 
     override fun estimateCostOfTransaction(transaction: TransactionToEstimate): String {
@@ -33,7 +34,7 @@ internal class TransactionRepositoryImpl(
 
     override fun getTransactionInfo(txHash: String, sender: Address?): TransactionInfo {
         val response = elrondProxy.getTransactionInfo(txHash, sender)
-        return requireNotNull(response.data).transaction
+        return requireNotNull(response.data).transaction.toDomain()
     }
 
     override fun getTransactionStatus(txHash: String, sender: Address?): String {

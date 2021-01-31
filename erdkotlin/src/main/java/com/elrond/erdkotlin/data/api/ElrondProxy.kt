@@ -3,6 +3,7 @@ package com.elrond.erdkotlin.data.api
 import com.elrond.erdkotlin.data.account.responses.GetAccountResponse
 import com.elrond.erdkotlin.data.account.responses.GetAddressBalanceResponse
 import com.elrond.erdkotlin.data.account.responses.GetAddressNonceResponse
+import com.elrond.erdkotlin.data.account.responses.GetAddressTransactionsResponse
 import com.elrond.erdkotlin.data.networkconfig.GetNetworkConfigResponse
 import com.elrond.erdkotlin.data.transaction.responses.EstimateCostOfTransactionResponse
 import com.elrond.erdkotlin.data.transaction.responses.GetTransactionInfoResponse
@@ -10,7 +11,6 @@ import com.elrond.erdkotlin.data.transaction.responses.GetTransactionStatusRespo
 import com.elrond.erdkotlin.data.transaction.responses.SendTransactionResponse
 import com.elrond.erdkotlin.domain.transaction.models.TransactionToEstimate
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
-import com.elrond.erdkotlin.domain.transaction.models.TransactionOnNetwork
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.google.gson.Gson
 
@@ -43,7 +43,7 @@ internal class ElrondProxy(
         return elrondClient.doGet("address/${address.bech32()}/balance")
     }
 
-    fun getAddressTransactions(address: Address): ElrondClient.ResponseBase<List<TransactionOnNetwork>> {
+    fun getAddressTransactions(address: Address): ElrondClient.ResponseBase<GetAddressTransactionsResponse> {
         return elrondClient.doGet("address/${address.bech32()}/transactions")
     }
 

@@ -18,7 +18,7 @@ data class TransactionInfo(
     val sourceShard: Long,
     val destinationShard: Long,
     val blockNonce: Long,
-    val miniBlockHash: String,
-    val blockHash: String,
+    val miniBlockHash: String?,
+    val blockHash: String?,
     val status: String,
 )

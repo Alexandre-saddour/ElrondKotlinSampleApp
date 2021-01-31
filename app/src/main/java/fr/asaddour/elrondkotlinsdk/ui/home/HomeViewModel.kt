@@ -11,8 +11,7 @@ import com.elrond.erdkotlin.domain.wallet.models.Wallet
 import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
-import com.elrond.erdkotlin.domain.transaction.GetTransactionStatusUsecase
-import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
+import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.LoadCurrentWalletUsecase
@@ -26,6 +25,8 @@ class HomeViewModel @ViewModelInject constructor(
     private val getAccountUsecase: GetAccountUsecase,
     private val sendTransactionUsecase: SendTransactionUsecase,
     private val getTransactionStatusUsecase: GetTransactionStatusUsecase,
+    private val getTransactionInfoUsecase: GetTransactionInfoUsecase,
+    private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase
 ) : ViewModel() {
 
@@ -34,7 +35,6 @@ class HomeViewModel @ViewModelInject constructor(
 
     private var wallet: Wallet? = null
     private var account: Account? = null
-
 
     fun refreshData() {
         launch(Dispatchers.IO) {
@@ -52,7 +52,6 @@ class HomeViewModel @ViewModelInject constructor(
             _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
             return
         }
-
         // load account
         account = getAccountUsecase.execute(Address.fromHex(wallet.publicKeyHex))
         val state = _viewState.value as? HomeViewState.Content
@@ -67,8 +66,22 @@ class HomeViewModel @ViewModelInject constructor(
                     state?.sentTransaction
                 )
             )
+            logTransactions(account.address)
+
         }
 
+
+    }
+
+    private fun logTransactions(address: Address) {
+        val transactions = getAddressTransactionsUsecase.execute(address)
+        if (transactions.isNotEmpty()){
+            val transaction = transactions.first()
+            Log.d("HomeViewModel", "transaction:$transaction")
+        }
+        else {
+            Log.d("HomeViewModel", "no transaction for address:${address}")
+        }
     }
 
     fun sendTransaction(
@@ -130,9 +143,11 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     fun fetchTransactionStatus(txHash: String) {
-        Log.d("alex", "fetchTransactionStatus: txHash:$txHash")
+        Log.d("HomeViewModel", "fetchTransactionStatus: txHash:$txHash")
         launch(Dispatchers.IO) {
             val transactionStatus = getTransactionStatusUsecase.execute(txHash)
+            val transactionInfo = getTransactionInfoUsecase.execute(txHash)
+            Log.d("HomeViewModel", "transactionInfo: $transactionInfo")
             val state = _viewState.value as HomeViewState.Content
             _viewState.postValue(
                 state.copy(

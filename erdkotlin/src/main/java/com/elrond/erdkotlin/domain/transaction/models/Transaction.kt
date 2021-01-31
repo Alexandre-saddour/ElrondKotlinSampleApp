@@ -49,7 +49,7 @@ data class Transaction(
             put("gasPrice", gasPrice)
             put("gasLimit", gasLimit)
             if (data.isNotEmpty()) {
-                put("data", getDataEncoded())
+                put("data", encode(data))
             }
             put("chainID", chainID)
             put("version", version)
@@ -57,10 +57,6 @@ data class Transaction(
                 put("signature", signature)
             }
         }
-    }
-
-    fun getDataEncoded(): String {
-        return encode(data)
     }
 
     private fun encode(data: String): String {
