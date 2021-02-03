@@ -11,7 +11,7 @@ import java.io.IOException
 
 internal class ElrondClient(
     var url: String,
-    val gson: Gson
+    private val gson: Gson
 ) {
 
     private val httpClient = OkHttpClient()
@@ -51,14 +51,12 @@ internal class ElrondClient(
     class ResponseBase<T> {
         val data: T? = null
         val error: String? = null
-        val code: String = ""
+        val code: String = "" // ex: "successful"
 
         @Throws(Exceptions.ProxyRequestException::class)
         fun throwIfError() {
-            error?.let { error ->
-                if (error.isNotEmpty()) {
-                    throw Exceptions.ProxyRequestException(error)
-                }
+            if (!error.isNullOrEmpty()) {
+                throw Exceptions.ProxyRequestException(error)
             }
             if (code != "successful") {
                 throw Exceptions.ProxyRequestException(code)

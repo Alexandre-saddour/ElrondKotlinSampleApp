@@ -4,10 +4,12 @@ import com.elrond.erdkotlin.data.account.responses.GetAccountResponse
 import com.elrond.erdkotlin.data.account.responses.GetAddressTransactionsResponse
 import com.elrond.erdkotlin.data.networkconfig.GetNetworkConfigResponse
 import com.elrond.erdkotlin.data.transaction.responses.GetTransactionInfoResponse
+import com.elrond.erdkotlin.data.vm.responses.QueryContractResponse
 import com.elrond.erdkotlin.domain.networkconfig.models.NetworkConfig
 import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.transaction.models.TransactionInfo
 import com.elrond.erdkotlin.domain.transaction.models.TransactionOnNetwork
+import com.elrond.erdkotlin.domain.vm.SmartContractOutput
 import com.elrond.erdkotlin.domain.wallet.models.Address
 
 internal fun GetAccountResponse.AccountData.toDomain(address: Address) = Account(
@@ -59,12 +61,20 @@ internal fun GetTransactionInfoResponse.TransactionInfoData.toDomain() = Transac
     status = status
 )
 
-internal fun NetworkConfig.Companion.fromProviderPayload(
-    response: GetNetworkConfigResponse.NetworkConfigData
-) = NetworkConfig(
-    chainID = response.chainID,
-    gasPerDataByte = response.gasPerDataByte,
-    minGasLimit = response.minGasLimit,
-    minGasPrice = response.minGasPrice,
-    minTransactionVersion = response.minTransactionVersion
+internal fun QueryContractResponse.Data.toDomain() = SmartContractOutput(
+    returnData = returnData,
+    returnCode = returnCode,
+    returnMessage = returnMessage,
+    gasRemaining = gasRemaining,
+    gasRefund = gasRefund,
+    outputAccounts = outputAccounts,
 )
+
+internal fun GetNetworkConfigResponse.NetworkConfigData.toDomain() = NetworkConfig(
+    chainID = chainID,
+    gasPerDataByte = gasPerDataByte,
+    minGasLimit = minGasLimit,
+    minGasPrice = minGasPrice,
+    minTransactionVersion = minTransactionVersion
+)
+
