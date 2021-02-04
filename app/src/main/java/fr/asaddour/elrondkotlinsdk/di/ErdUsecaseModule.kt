@@ -4,8 +4,10 @@ import com.elrond.erdkotlin.ErdSdk
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressBalanceUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
+import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
+import com.elrond.erdkotlin.domain.vm.QuerySmartContractUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,5 +45,11 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideEstimateCostOfTransactionUsecase(): EstimateCostOfTransactionUsecase = ErdSdk.estimateCostOfTransactionUsecase()
+
+    @Provides
+    fun provideRegisterDnsUsecase(): RegisterDnsUsecase = ErdSdk.registerDnsUsecase()
+
+    @Provides
+    fun provideQuerySmartContractUsecase(): QuerySmartContractUsecase = ErdSdk.querySmartContractUsecase()
 
 }
