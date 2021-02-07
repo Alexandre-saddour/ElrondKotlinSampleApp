@@ -24,6 +24,7 @@ class HomeViewModel @ViewModelInject constructor(
     private val deleteCurrentWalletUsecase: DeleteCurrentWalletUsecase,
     private val getAccountUsecase: GetAccountUsecase,
     private val sendTransactionUsecase: SendTransactionUsecase,
+    private val estimateCostOfTransactionUsecase: EstimateCostOfTransactionUsecase,
     private val getTransactionStatusUsecase: GetTransactionStatusUsecase,
     private val getTransactionInfoUsecase: GetTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
@@ -102,17 +103,20 @@ class HomeViewModel @ViewModelInject constructor(
         launch(Dispatchers.IO) {
             refreshDataNow() // make sure we have the right once
             val networkConfig = getNetworkConfigUsecase.execute()
+            val transaction = Transaction(
+                sender = Address.fromHex(wallet.publicKeyHex),
+                receiver = receiverAddress,
+                value = value,
+                data = message,
+                chainID = networkConfig.chainID,
+                gasPrice = networkConfig.minGasPrice,
+                gasLimit = networkConfig.minGasLimit * 2,
+                nonce = requireNotNull(account).nonce
+            )
+            val gas = estimateCostOfTransactionUsecase.execute(transaction)
+            Log.d("alex", "gas: $gas")
             val sentTransaction = sendTransactionUsecase.execute(
-                transaction = Transaction(
-                    sender = Address.fromHex(wallet.publicKeyHex),
-                    receiver = receiverAddress,
-                    value = value,
-                    data = message ?: "",
-                    chainID = networkConfig.chainID,
-                    gasPrice = networkConfig.minGasPrice,
-                    gasLimit = networkConfig.minGasLimit * 2,
-                    nonce = requireNotNull(account).nonce
-                ),
+                transaction = transaction,
                 wallet
             )
             delay(500) // delay the call the avoid a crash, ideally we would be polling
