@@ -34,7 +34,6 @@ class SignTransactionUsecaseTest {
     }
 
     @Test
-    @Ignore
     @Throws(Exception::class)
     fun signWithUsername() {
         // With data field
@@ -54,9 +53,9 @@ class SignTransactionUsecaseTest {
             """{"nonce":89,"value":"0","receiver":"erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx","sender":"erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th","senderUsername":"YWxpY2U=","receiverUsername":"Ym9i","gasPrice":1000000000,"gasLimit":50000,"chainID":"local-testnet","version":1}"""
 
         val expectedSignature =
-            "1bed82c3f91c9d24f3a163e7b93a47453d70e8743201fe7d3656c0214569566a76503ef0968279ac942ca43b9c930bd26638dfb075a220ce80b058ab7bca140a"
+            "264febfbb40e5a60143a035f054e12507738336a6b387ca4731c433b70bae785d631899bd86d6d8f68b293e579c0cf4b63a4eddfb9d91e46edb5d9eb1164160f"
         val expectedJson =
-            "{'nonce':7,'value':'10000000000000000000','receiver':'erd1cux02zersde0l7hhklzhywcxk4u9n4py5tdxyx7vrvhnza2r4gmq4vw35r','sender':'erd1l453hd0gt5gzdp7czpuall8ggt2dcv5zwmfdf3sd3lguxseux2fsmsgldz','gasPrice':1000000000,'gasLimit':70000,'data':'Zm9yIHRoZSBib29rIHdpdGggc3Rha2U=','chainID':'1','version':1,'signature':'$expectedSignature'}".replace(
+            "{'nonce':89,'value':'0','receiver':'erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx','sender':'erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th','senderUsername':'YWxpY2U=','receiverUsername':'Ym9i','gasPrice':1000000000,'gasLimit':50000,'chainID':'local-testnet','version':1,'signature':'$expectedSignature'}".replace(
                 '\'',
                 '"'
             )
@@ -65,7 +64,7 @@ class SignTransactionUsecaseTest {
 
         Assert.assertEquals(expectedSerialized, transaction.serialize())
         Assert.assertEquals(expectedSignature, signedTransaction.signature)
-//        Assert.assertEquals(expectedJson, signedTransaction.serialize())
+        Assert.assertEquals(expectedJson, signedTransaction.serialize())
     }
 
 
@@ -85,25 +84,5 @@ class SignTransactionUsecaseTest {
         Assert.assertEquals(expectedSignature, signedTransaction.signature)
         Assert.assertEquals(expectedJson, signedTransaction.serialize())
     }
-
-//    @Test
-//    fun signWithoutDataField2() {
-//        // Without data field
-//        val transaction = Transaction(
-//            nonce = 33,
-//            value = "0".toBigInteger(),
-//            sender = Address.fromBech32("erd1aj4uqfzkuusznlar78d4yp2d3fpwd9zz2tdeghhquqpv9fs88tzqws5xtk"),
-//            receiver = Address.fromBech32("erd1sytay9nan2fnjx069tesszrh5lxns940w3pgay8qltqrwcsquq9s44ee83"),
-//            gasPrice = 1000000000,
-//            gasLimit = 14000000,
-//            chainID = "D"
-//        )
-//        val expectedSignature =
-//            "c5dcc34986734936f013412e60f87e7c77ee064b4ddf86a502b7c1ec97776939ec7b2ca97825f89f4c483e502b4b0264b50f55dcf9445467ec2df9f78cfd1d02"
-//        val signedTransaction = SignTransactionUsecase().execute(transaction, wallet)
-//
-//        Assert.assertEquals(expectedSignature, signedTransaction.signature)
-//    }
-
 
 }
