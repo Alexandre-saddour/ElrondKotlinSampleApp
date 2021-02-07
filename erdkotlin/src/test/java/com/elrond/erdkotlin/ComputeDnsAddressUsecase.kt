@@ -10,7 +10,7 @@ class ComputeDnsAddressUsecase {
     private val computeDnsAddressUsecase = ErdSdk.computeDnsAddressUsecase()
 
     @Test
-    fun `compute name hash`() {
+    fun nameHash() {
         val nameHash = computeDnsAddressUsecase.nameHash("alex.elrond")
         assertEquals(
             "560DD600F74E220A4870CBFFB9143F30617754DFFBAEBF7B4C499EDEAE8B673D",
@@ -19,7 +19,7 @@ class ComputeDnsAddressUsecase {
     }
 
     @Test
-    fun `long to UInt32 ByteArray`() {
+    fun longToUInt32ByteArray() {
         val byteArray = computeDnsAddressUsecase.longToUInt32ByteArray(123211089L, 8)
         assertEquals(
             byteArrayOf(81, 13, 88, 7, 0, 0, 0, 0).toList(),

@@ -16,8 +16,7 @@ class SignTransactionUsecaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun signWithDataField() {
-        // With data field
+    fun `sign with data field`() {
         val transaction = transactionWithData()
         val expectedSignature =
             "096c571889352947f285632d79f2b2ee1b81e7acd19ee20510d34002eba0f999b4720f50211b039dd40914284f84c14eb84815bb045c14dbed036f2e87431307"
@@ -35,8 +34,7 @@ class SignTransactionUsecaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun signWithUsername() {
-        // With data field
+    fun `sign with username`() {
         val transaction = Transaction(
             sender = Address.fromBech32("erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
             receiver = Address.fromBech32("erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
@@ -69,7 +67,7 @@ class SignTransactionUsecaseTest {
 
 
     @Test
-    fun signWithoutDataField() {
+    fun `sign without data field`() {
         // Without data field
         val transaction = TestHelper.transactionWithoutData()
         val expectedSignature =
