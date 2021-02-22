@@ -8,29 +8,37 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-app:
+
+  build-sdk:
     runs-on: macos-latest
     steps:
+      # init
       - name: Checkout the code
         uses: actions/checkout@v2
-
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      # build and test
+      - name: Build SDK
+        run: ./gradlew erdkotlin:build
+      - name: Test SDK
+        run: ./gradlew erdkotlin:test
 
-      - name: Build the app
-        run: |
-          ./gradlew build
-  test-app:
-    needs: build-app
+  build-app:
+    needs: build-sdk
     runs-on: macos-latest
     steps:
-#      - name: Checkout the code
-#        uses: actions/checkout@v2
-#      - name: Set up JDK 1.8
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.8
-      - name: Run Unit tests
-        run: ./gradlew test --stacktrace
+      # init
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      # build and test
+      - name: Build App
+        run: ./gradlew app:build
+      - name: Test App
+        run: ./gradlew app:test
+
