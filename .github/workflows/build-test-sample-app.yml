@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  build-sdk:
+  build-test-sdk:
     runs-on: macos-latest
     steps:
       # init
@@ -25,8 +25,8 @@ jobs:
       - name: Test SDK
         run: ./gradlew erdkotlin:test
 
-  build-app:
-    needs: build-sdk
+  build-test-app:
+    needs: build-test-sdk
     runs-on: macos-latest
     steps:
       # init
