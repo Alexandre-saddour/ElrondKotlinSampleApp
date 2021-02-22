@@ -21,6 +21,7 @@ jobs:
         run: |
           ./gradlew build
   test-app:
+    needs: build
     runs-on: macos-latest
     steps:
 #      - name: Checkout the code
