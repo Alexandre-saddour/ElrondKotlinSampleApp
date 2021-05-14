@@ -2,7 +2,9 @@ package fr.asaddour.elrondkotlinsdk
 
 import android.app.Application
 import android.content.Context
+import com.elrond.erdkotlin.ErdSdk
 import dagger.hilt.android.HiltAndroidApp
+import okhttp3.logging.HttpLoggingInterceptor
 
 @HiltAndroidApp
 class SampleApp : Application() {
@@ -10,6 +12,9 @@ class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        ErdSdk.elrondHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
     }
 
     companion object {
