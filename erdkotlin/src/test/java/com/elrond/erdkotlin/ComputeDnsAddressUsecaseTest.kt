@@ -5,7 +5,7 @@ import com.elrond.erdkotlin.domain.wallet.models.Address
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ComputeDnsAddressUsecase {
+class ComputeDnsAddressUsecaseTest {
 
     private val computeDnsAddressUsecase = ErdSdk.computeDnsAddressUsecase()
 

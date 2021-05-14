@@ -15,7 +15,6 @@ class SignTransactionUsecaseTest {
     private val wallet = Wallet.createFromPrivateKey(alicePrivateKey)
 
     @Test
-    @Throws(Exception::class)
     fun `sign with data field`() {
         val transaction = transactionWithData()
         val expectedSignature =
@@ -33,7 +32,6 @@ class SignTransactionUsecaseTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun `sign with username`() {
         val transaction = Transaction(
             sender = Address.fromBech32("erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
