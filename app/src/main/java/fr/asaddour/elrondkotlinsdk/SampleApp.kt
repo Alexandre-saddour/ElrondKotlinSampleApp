@@ -12,9 +12,12 @@ class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        ErdSdk.elrondHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
+        // configure the OkHttpClient
+        ErdSdk.elrondHttpClientBuilder.apply {
+            addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+        }
     }
 
     companion object {

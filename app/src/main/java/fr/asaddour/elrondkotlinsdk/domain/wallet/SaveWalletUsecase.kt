@@ -3,7 +3,7 @@ package fr.asaddour.elrondkotlinsdk.domain.wallet
 import com.elrond.erdkotlin.domain.wallet.models.Wallet
 import javax.inject.Inject
 
-class ImportWalletUsecase @Inject constructor(
+class SaveWalletUsecase @Inject constructor(
     private val repository: WalletRepository
 ) {
 

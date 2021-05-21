@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager
 import fr.asaddour.elrondkotlinsdk.domain.wallet.WalletRepository
 
 
-// This implementation is obviously un-secure but good enough for a sameple app
+// This implementation is obviously un-secure but good enough for a sample app
 class WalletRepositorySharedPref(context: Context) : WalletRepository {
 
     private val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import fr.asaddour.elrondkotlinsdk.domain.wallet.CreateWalletUsecase
-import fr.asaddour.elrondkotlinsdk.domain.wallet.ImportWalletUsecase
+import fr.asaddour.elrondkotlinsdk.domain.wallet.SaveWalletUsecase
 import fr.asaddour.elrondkotlinsdk.extentions.launch
 import kotlinx.coroutines.Dispatchers
 
 class CreateWalletViewModel @ViewModelInject constructor(
     private val createWalletUsecase: CreateWalletUsecase,
-    private val importWalletUsecase: ImportWalletUsecase
+    private val saveWalletUsecase: SaveWalletUsecase
 ) : ViewModel() {
 
     private val _viewState = MutableLiveData<CreateWalletViewState>()
@@ -26,17 +26,16 @@ class CreateWalletViewModel @ViewModelInject constructor(
         }
     }
 
-    fun importWallet(mnemonic: String) {
+    fun saveWallet(mnemonic: String) {
         launch(Dispatchers.IO) {
             val trimmedMnemonic = mnemonic.trim()
             if (trimmedMnemonic.split(" ").size != 24){
                 _viewState.postValue(CreateWalletViewState.InvalidMnemonic)
             }
             else {
-                importWalletUsecase.execute(trimmedMnemonic)
+                saveWalletUsecase.execute(trimmedMnemonic)
                 _viewState.postValue(CreateWalletViewState.CloseScreen)
             }
-
         }
     }
 

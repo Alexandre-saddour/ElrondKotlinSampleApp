@@ -62,8 +62,8 @@ class HomeActivity : AppCompatActivity() {
             Snackbar.make(view, "Address copied to clipboard", Snackbar.LENGTH_SHORT).show()
             true
         }
-        disconnectWalletButton.setOnClickListener {
-            viewModel.disconnect()
+        closeWalletButton.setOnClickListener {
+            viewModel.deleteWallet()
         }
         sendTransactionButton.setOnClickListener {
             viewModel.sendTransaction(
@@ -82,9 +82,9 @@ class HomeActivity : AppCompatActivity() {
         )
         loadingGroup.visibility = View.GONE
         contentGroup.visibility = View.VISIBLE
-        walletAddress.setText(viewState.walletContent.address)
-        walletBalance.setText(viewState.walletContent.balance)
-        walletNonce.setText(viewState.walletContent.nonce)
+        walletAddress.setText(viewState.account.address)
+        walletBalance.setText(viewState.account.balance)
+        walletNonce.setText(viewState.account.nonce)
 
 
         sentTransactionTxField.apply {
@@ -105,6 +105,6 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshData()
+        viewModel.refreshAccountData()
     }
 }

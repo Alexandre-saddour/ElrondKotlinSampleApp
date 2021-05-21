@@ -11,7 +11,7 @@
     <string name="address">Address</string>
     <string name="generate_mnemonic">Generate mnemonic</string>
     <string name="invalidMnemonic">Invalid mnemonic</string>
-    <string name="disconnect_wallet">Disconnect wallet</string>
+    <string name="close_wallet">Close wallet</string>
     <string name="destination">Destination</string>
     <string name="to">To</string>
     <string name="amount">Amount</string>

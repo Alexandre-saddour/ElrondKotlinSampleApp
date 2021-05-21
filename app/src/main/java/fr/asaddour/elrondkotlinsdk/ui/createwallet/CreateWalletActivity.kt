@@ -25,8 +25,7 @@ class CreateWalletActivity : AppCompatActivity() {
                     viewState
                 )
                 CreateWalletViewModel.CreateWalletViewState.CloseScreen -> startActivity(Intent(this, HomeActivity::class.java))
-                CreateWalletViewModel.CreateWalletViewState.InvalidMnemonic -> mnemonicField.error =
-                    getString(R.string.enter_24_words)
+                CreateWalletViewModel.CreateWalletViewState.InvalidMnemonic -> showInvalidMnemonic()
             }
         }
     }
@@ -36,13 +35,17 @@ class CreateWalletActivity : AppCompatActivity() {
             viewModel.createWallet()
         }
         importWalletButton.setOnClickListener {
-            viewModel.importWallet(mnemonicField.text.toString())
+            viewModel.saveWallet(mnemonicField.text.toString())
         }
     }
 
     private fun updateView(viewState: CreateWalletViewModel.CreateWalletViewState.GeneratedMnemonic) {
         mnemonicField.setText(viewState.mnemonic)
         mnemonicField.error = null
+    }
+
+    private fun showInvalidMnemonic() {
+        mnemonicField.error = getString(R.string.enter_24_words)
     }
 
 }

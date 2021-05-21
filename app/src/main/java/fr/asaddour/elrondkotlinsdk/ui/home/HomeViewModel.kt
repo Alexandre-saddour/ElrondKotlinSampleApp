@@ -8,16 +8,17 @@ import androidx.lifecycle.ViewModel
 import com.elrond.erdkotlin.Exceptions
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.elrond.erdkotlin.domain.wallet.models.Wallet
-import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
+import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
+import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.LoadCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.extentions.launch
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class HomeViewModel @ViewModelInject constructor(
     private val loadCurrentWalletUsecase: LoadCurrentWalletUsecase,
@@ -25,8 +26,8 @@ class HomeViewModel @ViewModelInject constructor(
     private val getAccountUsecase: GetAccountUsecase,
     private val sendTransactionUsecase: SendTransactionUsecase,
     private val estimateCostOfTransactionUsecase: EstimateCostOfTransactionUsecase,
-    private val getTransactionStatusUsecase: GetTransactionStatusUsecase,
-    private val getTransactionInfoUsecase: GetTransactionInfoUsecase,
+    private val pollTransactionStatusUsecase: PollTransactionStatusUsecase,
+    private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase
 ) : ViewModel() {
@@ -35,15 +36,9 @@ class HomeViewModel @ViewModelInject constructor(
     val viewState: LiveData<HomeViewState> = _viewState
 
     private var wallet: Wallet? = null
-    private var account: Account? = null
 
-    fun refreshData() {
-        launch(Dispatchers.IO) {
-            refreshDataNow()
-        }
-    }
-
-    private fun refreshDataNow() {
+    fun refreshAccountData() = launch(Dispatchers.IO) {
+        _viewState.postValue(HomeViewState.Loading)
         // load wallet only once
         val wallet = wallet ?: loadCurrentWalletUsecase.execute()?.also { wallet = it }
 
@@ -51,36 +46,32 @@ class HomeViewModel @ViewModelInject constructor(
         // lets create one
         wallet ?: run {
             _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
-            return
+            return@launch
         }
+
         // load account
-        account = getAccountUsecase.execute(Address.fromHex(wallet.publicKeyHex))
-        val state = _viewState.value as? HomeViewState.Content
-        account?.let { account ->
-            _viewState.postValue(
-                HomeViewState.Content(
-                    walletContent = WalletContent(
-                        address = account.address.bech32(),
-                        balance = account.balance.toString(),
-                        nonce = account.nonce.toString(),
-                    ),
-                    state?.sentTransaction
-                )
+        val address = Address.fromHex(wallet.publicKeyHex)
+        val account = getAccountUsecase.execute(address).toUi()
+        val state = when (val state = _viewState.value) {
+            is HomeViewState.Content -> state.copy(
+                account = account
             )
-            logTransactions(account.address)
-
+            else -> HomeViewState.Content(
+                account = account,
+                sentTransaction = null
+            )
         }
-
-
+        _viewState.postValue(state)
+        logTransactions(address)
     }
 
+    // keeping this until a dedicated screen is done.
     private fun logTransactions(address: Address) {
         val transactions = getAddressTransactionsUsecase.execute(address)
-        if (transactions.isNotEmpty()){
+        if (transactions.isNotEmpty()) {
             val transaction = transactions.first()
             Log.d("HomeViewModel", "transaction:$transaction")
-        }
-        else {
+        } else {
             Log.d("HomeViewModel", "no transaction for address:${address}")
         }
     }
@@ -91,6 +82,7 @@ class HomeViewModel @ViewModelInject constructor(
         message: String?
     ) {
         val receiverAddress = extractAddress(toAddress) ?: run {
+            // receiver address is invalid
             _viewState.value = HomeViewState.InvalidReceiverAddress
             return
         }
@@ -101,28 +93,25 @@ class HomeViewModel @ViewModelInject constructor(
             else -> amount.toBigInteger()
         }
         launch(Dispatchers.IO) {
-            refreshDataNow() // make sure we have the right once
+            // loading account from remote to make sure we have the right once
+            val account = getAccountUsecase.execute(Address.fromHex(wallet.publicKeyHex))
             val networkConfig = getNetworkConfigUsecase.execute()
-            val transaction = Transaction(
-                sender = Address.fromHex(wallet.publicKeyHex),
-                receiver = receiverAddress,
-                value = value,
-                data = message,
-                chainID = networkConfig.chainID,
-                gasPrice = networkConfig.minGasPrice,
-                gasLimit = networkConfig.minGasLimit * 2,
-                nonce = requireNotNull(account).nonce
-            )
-            val gas = estimateCostOfTransactionUsecase.execute(transaction)
-            Log.d("alex", "gas: $gas")
-            val sentTransaction = sendTransactionUsecase.execute(
-                transaction = transaction,
-                wallet
-            )
-            delay(500) // delay the call the avoid a crash, ideally we would be polling
+            val transaction = run {
+                val transaction = Transaction(
+                    sender = Address.fromHex(wallet.publicKeyHex),
+                    receiver = receiverAddress,
+                    value = value,
+                    data = message,
+                    chainID = networkConfig.chainID,
+                    gasPrice = networkConfig.minGasPrice,
+                    nonce = account.nonce
+                )
+                val gasLimit = estimateCostOfTransactionUsecase.execute(transaction)
+                transaction.copy(gasLimit = gasLimit.toLong())
+            }
+            val sentTransaction = sendTransactionUsecase.execute(transaction, wallet)
             fetchTransactionStatus(txHash = sentTransaction.txHash)
         }
-
     }
 
     private fun extractAddress(toAddress: String) = try {
@@ -138,21 +127,27 @@ class HomeViewModel @ViewModelInject constructor(
         null
     }
 
-    fun disconnect() {
-        launch(Dispatchers.IO) {
-            wallet = null
-            deleteCurrentWalletUsecase.execute()
+    fun deleteWallet() {
+        launch {
+            // delete wallet
+            withContext(Dispatchers.IO) {
+                wallet = null
+                deleteCurrentWalletUsecase.execute()
+            }
+
+            // go to wallet creation screen.
+            _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
         }
-        _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
     }
 
-    fun fetchTransactionStatus(txHash: String) {
-        Log.d("HomeViewModel", "fetchTransactionStatus: txHash:$txHash")
-        launch(Dispatchers.IO) {
-            val transactionStatus = getTransactionStatusUsecase.execute(txHash)
-            val transactionInfo = getTransactionInfoUsecase.execute(txHash)
-            Log.d("HomeViewModel", "transactionInfo: $transactionInfo")
-            val state = _viewState.value as HomeViewState.Content
+    fun fetchTransactionStatus(txHash: String) = launch(Dispatchers.IO) {
+        Log.d("HomeViewModel", "fetching transaction status and info for $txHash")
+        val transactionStatus = pollTransactionStatusUsecase.execute(txHash)
+        val transactionInfo = pollTransactionInfoUsecase.execute(txHash)
+        Log.d("HomeViewModel", "transaction status: $transactionStatus")
+        Log.d("HomeViewModel", "transaction info: $transactionInfo")
+        val state = _viewState.value as? HomeViewState.Content
+        if (state != null) {
             _viewState.postValue(
                 state.copy(
                     sentTransaction = SentTransaction(
@@ -162,7 +157,6 @@ class HomeViewModel @ViewModelInject constructor(
                 )
             )
         }
-
     }
 
     sealed class HomeViewState {
@@ -170,13 +164,13 @@ class HomeViewModel @ViewModelInject constructor(
         object Loading : HomeViewState()
         object InvalidReceiverAddress : HomeViewState()
         data class Content(
-            val walletContent: WalletContent,
+            val account: AccountUi,
             val sentTransaction: SentTransaction?
         ) : HomeViewState()
 
     }
 
-    data class WalletContent(
+    data class AccountUi(
         val address: String,
         val balance: String,
         val nonce: String
