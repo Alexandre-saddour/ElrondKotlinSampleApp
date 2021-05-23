@@ -18,18 +18,20 @@ import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import fr.asaddour.elrondkotlinsdk.R
+import fr.asaddour.elrondkotlinsdk.databinding.ActivityMainBinding
 import fr.asaddour.elrondkotlinsdk.ui.createwallet.CreateWalletActivity
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<HomeViewModel>()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initView()
         viewModel.viewState.observe(this) { viewState ->
             Log.d("HomeViewModel", "viewState:$viewState")
@@ -44,17 +46,17 @@ class HomeActivity : AppCompatActivity() {
                     )
                 )
                 HomeViewModel.HomeViewState.Loading -> {
-                    loadingGroup.visibility = View.VISIBLE
-                    contentGroup.visibility = View.GONE
+                    binding.loadingGroup.visibility = View.VISIBLE
+                    binding.contentGroup.visibility = View.GONE
                 }
-                HomeViewModel.HomeViewState.InvalidReceiverAddress -> toAddressField.error =
+                HomeViewModel.HomeViewState.InvalidReceiverAddress -> binding.toAddressField.error =
                     getString(R.string.invalidAddress)
             }
         }
     }
 
     private fun initView() {
-        walletAddress.setOnLongClickListener { view ->
+        binding.walletAddress.setOnLongClickListener { view ->
             (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).apply {
                 val clip = ClipData.newPlainText("wallet address", (view as TextView).text)
                 setPrimaryClip(clip)
@@ -62,14 +64,14 @@ class HomeActivity : AppCompatActivity() {
             Snackbar.make(view, "Address copied to clipboard", Snackbar.LENGTH_SHORT).show()
             true
         }
-        closeWalletButton.setOnClickListener {
+        binding.closeWalletButton.setOnClickListener {
             viewModel.deleteWallet()
         }
-        sendTransactionButton.setOnClickListener {
+        binding.sendTransactionButton.setOnClickListener {
             viewModel.sendTransaction(
-                toAddress = toAddressField.text.toString(),
-                amount = transactionAmountField.text.toString(),
-                message = transactionMessageField.text.toString()
+                toAddress = binding.toAddressField.text.toString(),
+                amount = binding.transactionAmountField.text.toString(),
+                message = binding.transactionMessageField.text.toString()
             )
         }
     }
@@ -77,17 +79,17 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun updateContent(viewState: HomeViewModel.HomeViewState.Content) {
         TransitionManager.beginDelayedTransition(
-            walletAddress.parent as ViewGroup,
+            binding.walletAddress.parent as ViewGroup,
             Slide(Gravity.BOTTOM)
         )
-        loadingGroup.visibility = View.GONE
-        contentGroup.visibility = View.VISIBLE
-        walletAddress.setText(viewState.account.address)
-        walletBalance.setText(viewState.account.balance)
-        walletNonce.setText(viewState.account.nonce)
+        binding.loadingGroup.visibility = View.GONE
+        binding.contentGroup.visibility = View.VISIBLE
+        binding.walletAddress.setText(viewState.account.address)
+        binding.walletBalance.setText(viewState.account.balance)
+        binding.walletNonce.setText(viewState.account.nonce)
 
 
-        sentTransactionTxField.apply {
+        binding.sentTransactionTxField.apply {
             if (viewState.sentTransaction != null) {
                 text = "${getString(R.string.tx)}: ${viewState.sentTransaction.txHash}\n" +
                         "${getString(R.string.status)}: ${viewState.sentTransaction.status}"
