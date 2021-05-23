@@ -1,7 +1,7 @@
 package fr.asaddour.elrondkotlinsdk.domain.transaction
 
 import com.elrond.erdkotlin.domain.transaction.GetTransactionInfoUsecase
-import fr.asaddour.elrondkotlinsdk.extentions.retry
+import fr.asaddour.elrondkotlinsdk.utils.ext.retry
 import javax.inject.Inject
 
 class PollTransactionInfoUsecase @Inject constructor(

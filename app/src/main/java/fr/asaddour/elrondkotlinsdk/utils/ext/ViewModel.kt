@@ -1,7 +1,6 @@
-package fr.asaddour.elrondkotlinsdk.extentions
+package fr.asaddour.elrondkotlinsdk.utils.ext
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart

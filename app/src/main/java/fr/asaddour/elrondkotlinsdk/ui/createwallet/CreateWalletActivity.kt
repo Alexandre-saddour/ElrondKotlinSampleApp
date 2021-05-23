@@ -26,8 +26,12 @@ class CreateWalletActivity : AppCompatActivity() {
                 is CreateWalletViewModel.CreateWalletViewState.GeneratedMnemonic -> updateView(
                     viewState
                 )
-                CreateWalletViewModel.CreateWalletViewState.CloseScreen -> startActivity(Intent(this, HomeActivity::class.java))
-                CreateWalletViewModel.CreateWalletViewState.InvalidMnemonic -> showInvalidMnemonic()
+            }
+        }
+        viewModel.viewAction.observe(this) { viewAction ->
+            when (viewAction){
+                CreateWalletViewModel.CreateWalletAction.CloseScreen -> startActivity(Intent(this, HomeActivity::class.java))
+                CreateWalletViewModel.CreateWalletAction.InvalidMnemonic -> showInvalidMnemonic()
             }
         }
     }

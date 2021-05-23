@@ -6,13 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import fr.asaddour.elrondkotlinsdk.domain.wallet.CreateWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.SaveWalletUsecase
-import fr.asaddour.elrondkotlinsdk.extentions.launch
+import fr.asaddour.elrondkotlinsdk.utils.SingleLiveEvent
+import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
 
 class CreateWalletViewModel @ViewModelInject constructor(
     private val createWalletUsecase: CreateWalletUsecase,
     private val saveWalletUsecase: SaveWalletUsecase
 ) : ViewModel() {
+
+    private val _viewAction = SingleLiveEvent<CreateWalletAction>()
+    val viewAction: LiveData<CreateWalletAction> = _viewAction
 
     private val _viewState = MutableLiveData<CreateWalletViewState>()
     val viewState: LiveData<CreateWalletViewState> = _viewState
@@ -30,19 +34,22 @@ class CreateWalletViewModel @ViewModelInject constructor(
         launch(Dispatchers.IO) {
             val trimmedMnemonic = mnemonic.trim()
             if (trimmedMnemonic.split(" ").size != 24){
-                _viewState.postValue(CreateWalletViewState.InvalidMnemonic)
+                _viewAction.postValue(CreateWalletAction.InvalidMnemonic)
             }
             else {
                 saveWalletUsecase.execute(trimmedMnemonic)
-                _viewState.postValue(CreateWalletViewState.CloseScreen)
+                _viewAction.postValue(CreateWalletAction.CloseScreen)
             }
         }
     }
 
     sealed class CreateWalletViewState {
         data class GeneratedMnemonic(val mnemonic: String) : CreateWalletViewState()
-        object InvalidMnemonic : CreateWalletViewState()
-        object CloseScreen : CreateWalletViewState()
+    }
+
+    sealed class CreateWalletAction {
+        object InvalidMnemonic : CreateWalletAction()
+        object CloseScreen : CreateWalletAction()
     }
 
 }

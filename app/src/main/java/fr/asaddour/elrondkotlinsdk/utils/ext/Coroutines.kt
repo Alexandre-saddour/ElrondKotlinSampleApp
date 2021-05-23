@@ -1,4 +1,4 @@
-package fr.asaddour.elrondkotlinsdk.extentions
+package fr.asaddour.elrondkotlinsdk.utils.ext
 
 import kotlinx.coroutines.delay
 import java.lang.Exception

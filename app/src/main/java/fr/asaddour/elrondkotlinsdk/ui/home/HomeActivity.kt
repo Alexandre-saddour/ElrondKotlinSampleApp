@@ -39,17 +39,22 @@ class HomeActivity : AppCompatActivity() {
                 is HomeViewModel.HomeViewState.Content -> {
                     updateContent(viewState)
                 }
-                HomeViewModel.HomeViewState.OpenCreateWalletScreen -> startActivity(
+                HomeViewModel.HomeViewState.Loading -> {
+                    binding.loadingGroup.visibility = View.VISIBLE
+                    binding.contentGroup.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.viewAction.observe(this) { viewAction ->
+            when (viewAction) {
+                HomeViewModel.HomeAction.OpenCreateWalletScreen -> startActivity(
                     Intent(
                         this,
                         CreateWalletActivity::class.java
                     )
                 )
-                HomeViewModel.HomeViewState.Loading -> {
-                    binding.loadingGroup.visibility = View.VISIBLE
-                    binding.contentGroup.visibility = View.GONE
-                }
-                HomeViewModel.HomeViewState.InvalidReceiverAddress -> binding.toAddressField.error =
+                HomeViewModel.HomeAction.InvalidReceiverAddress -> binding.toAddressField.error =
                     getString(R.string.invalidAddress)
             }
         }

@@ -16,7 +16,8 @@ import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.LoadCurrentWalletUsecase
-import fr.asaddour.elrondkotlinsdk.extentions.launch
+import fr.asaddour.elrondkotlinsdk.utils.SingleLiveEvent
+import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,6 +33,10 @@ class HomeViewModel @ViewModelInject constructor(
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase
 ) : ViewModel() {
 
+
+    private val _viewAction = SingleLiveEvent<HomeAction>()
+    val viewAction: LiveData<HomeAction> = _viewAction
+
     private val _viewState = MutableLiveData<HomeViewState>(HomeViewState.Loading)
     val viewState: LiveData<HomeViewState> = _viewState
 
@@ -45,7 +50,7 @@ class HomeViewModel @ViewModelInject constructor(
         // we don't have any wallet
         // lets create one
         wallet ?: run {
-            _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
+            _viewAction.postValue(HomeAction.OpenCreateWalletScreen)
             return@launch
         }
 
@@ -83,7 +88,7 @@ class HomeViewModel @ViewModelInject constructor(
     ) {
         val receiverAddress = extractAddress(toAddress) ?: run {
             // receiver address is invalid
-            _viewState.value = HomeViewState.InvalidReceiverAddress
+            _viewAction.value = HomeAction.InvalidReceiverAddress
             return
         }
 
@@ -136,7 +141,7 @@ class HomeViewModel @ViewModelInject constructor(
             }
 
             // go to wallet creation screen.
-            _viewState.postValue(HomeViewState.OpenCreateWalletScreen)
+            _viewAction.postValue(HomeAction.OpenCreateWalletScreen)
         }
     }
 
@@ -160,9 +165,7 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     sealed class HomeViewState {
-        object OpenCreateWalletScreen : HomeViewState()
         object Loading : HomeViewState()
-        object InvalidReceiverAddress : HomeViewState()
         data class Content(
             val account: AccountUi,
             val sentTransaction: SentTransaction?
@@ -180,5 +183,11 @@ class HomeViewModel @ViewModelInject constructor(
         val txHash: String,
         val status: String,
     )
+
+    sealed class HomeAction {
+        object OpenCreateWalletScreen : HomeAction()
+        object InvalidReceiverAddress : HomeAction()
+    }
+
 
 }
