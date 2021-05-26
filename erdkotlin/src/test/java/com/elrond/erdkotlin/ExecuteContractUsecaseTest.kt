@@ -6,6 +6,7 @@ import com.elrond.erdkotlin.helper.TestDataProvider.wallet
 import com.elrond.erdkotlin.domain.vm.ExecuteContractUsecase
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.elrond.erdkotlin.helper.TestUsecaseProvider.sendTransactionUsecase
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -14,33 +15,23 @@ class ExecuteContractUsecaseTest {
     private val executeContractUsecase = ExecuteContractUsecase(sendTransactionUsecase)
 
     @Test
-    fun `should succeed if arg is digit`() {
-        executeContractUsecase.execute(
+    fun `should format data correctly`() {
+        val sentTransaction = executeContractUsecase.execute(
             account = account,
             wallet = wallet,
             networkConfig = networkConfig,
             gasPrice = 100,
             gasLimit = 100,
             contractAddress = Address.fromBech32("erd1qqqqqqqqqqqqqpgqagvtnqn9dgnx7a6stw4n92kufathjrfd8tzqf80mkz"),
-            funcName = "increment",
-            args = listOf("255")
+            funcName = "awesomeFunc",
+            args = listOf("255", "0x5745474c442d616263646566", "0xDEADBEEF")
+        )
+
+        assertEquals(
+            sentTransaction.data,
+            "awesomeFunc@FF@5745474C442D616263646566@DEADBEEF"
         )
     }
-
-    @Test
-    fun `should succeed if arg is hex`() {
-        executeContractUsecase.execute(
-            account = account,
-            wallet = wallet,
-            networkConfig = networkConfig,
-            gasPrice = 100,
-            gasLimit = 100,
-            contractAddress = Address.fromBech32("erd1qqqqqqqqqqqqqpgqagvtnqn9dgnx7a6stw4n92kufathjrfd8tzqf80mkz"),
-            funcName = "increment",
-            args = listOf("0xff")
-        )
-    }
-
 
     @Test
     fun `should fail if arg is not digit`() {
@@ -52,7 +43,7 @@ class ExecuteContractUsecaseTest {
                 gasPrice = 100,
                 gasLimit = 100,
                 contractAddress = Address.fromBech32("erd1qqqqqqqqqqqqqpgqagvtnqn9dgnx7a6stw4n92kufathjrfd8tzqf80mkz"),
-                funcName = "increment",
+                funcName = "awesomeFunc",
                 args = listOf("notADigit")
             )
         }

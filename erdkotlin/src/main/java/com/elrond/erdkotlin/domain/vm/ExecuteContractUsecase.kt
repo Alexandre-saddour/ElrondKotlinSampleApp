@@ -35,7 +35,7 @@ class ExecuteContractUsecase internal constructor(
             gasPrice = gasPrice,
             gasLimit = gasLimit,
             value = value,
-            data = args.fold(funcName) { it1, it2 -> it1 + prepareArgument(it2) }
+            data = args.fold(funcName) { it1, it2 -> it1 + "@${prepareArgument(it2)}" }
         )
         return sendTransactionUsecase.execute(transaction, wallet)
     }
@@ -55,7 +55,7 @@ class ExecuteContractUsecase internal constructor(
         }
 
         val asNumber = argUpCase.toInt()
-        val asHexstring = "%X".format(asNumber).substring(startIndex = hexPrefix.length)
+        val asHexstring = "%X".format(asNumber)
         if (asHexstring.length % 2 == 1){
             return "0$asHexstring"
         }
