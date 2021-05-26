@@ -7,6 +7,7 @@ import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
 import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
+import com.elrond.erdkotlin.domain.vm.ExecuteContractUsecase
 import com.elrond.erdkotlin.domain.vm.QuerySmartContractUsecase
 import dagger.Module
 import dagger.Provides
@@ -51,5 +52,8 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideQuerySmartContractUsecase(): QuerySmartContractUsecase = ErdSdk.querySmartContractUsecase()
+
+    @Provides
+    fun provideExecuteSmartContractUsecase(): ExecuteContractUsecase = ErdSdk.executeSmartContractUsecase()
 
 }
