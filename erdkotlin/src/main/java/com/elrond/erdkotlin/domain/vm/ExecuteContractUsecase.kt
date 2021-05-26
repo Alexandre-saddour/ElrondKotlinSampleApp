@@ -7,6 +7,7 @@ import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.elrond.erdkotlin.domain.wallet.models.Wallet
 import com.elrond.erdkotlin.utils.isDigitsOnly
+import com.elrond.erdkotlin.utils.toHexString
 import java.math.BigInteger
 import java.util.*
 
@@ -55,7 +56,7 @@ class ExecuteContractUsecase internal constructor(
         }
 
         val asNumber = argUpCase.toInt()
-        val asHexstring = "%X".format(asNumber)
+        val asHexstring = asNumber.toHexString()
         if (asHexstring.length % 2 == 1){
             return "0$asHexstring"
         }
