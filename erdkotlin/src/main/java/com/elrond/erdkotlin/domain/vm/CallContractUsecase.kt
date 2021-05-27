@@ -11,7 +11,7 @@ import com.elrond.erdkotlin.utils.toHexString
 import java.math.BigInteger
 import java.util.*
 
-class ExecuteContractUsecase internal constructor(
+class CallContractUsecase internal constructor(
     private val sendTransactionUsecase: SendTransactionUsecase,
 ) {
 

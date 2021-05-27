@@ -3,20 +3,20 @@ package com.elrond.erdkotlin
 import com.elrond.erdkotlin.helper.TestDataProvider.account
 import com.elrond.erdkotlin.helper.TestDataProvider.networkConfig
 import com.elrond.erdkotlin.helper.TestDataProvider.wallet
-import com.elrond.erdkotlin.domain.vm.ExecuteContractUsecase
+import com.elrond.erdkotlin.domain.vm.CallContractUsecase
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.elrond.erdkotlin.helper.TestUsecaseProvider.sendTransactionUsecase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
-class ExecuteContractUsecaseTest {
+class CallContractUsecaseTest {
 
-    private val executeContractUsecase = ExecuteContractUsecase(sendTransactionUsecase)
+    private val callContractUsecase = CallContractUsecase(sendTransactionUsecase)
 
     @Test
     fun `should format data correctly`() {
-        val sentTransaction = executeContractUsecase.execute(
+        val sentTransaction = callContractUsecase.execute(
             account = account,
             wallet = wallet,
             networkConfig = networkConfig,
@@ -36,7 +36,7 @@ class ExecuteContractUsecaseTest {
     @Test
     fun `should fail if arg is not digit`() {
         assertThrows(IllegalArgumentException::class.java) {
-            executeContractUsecase.execute(
+            callContractUsecase.execute(
                 account = account,
                 wallet = wallet,
                 networkConfig = networkConfig,
