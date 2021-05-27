@@ -8,7 +8,7 @@ import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.vm.CallContractUsecase
-import com.elrond.erdkotlin.domain.vm.QuerySmartContractUsecase
+import com.elrond.erdkotlin.domain.vm.QueryContractUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,9 +51,9 @@ object ErdUsecaseModule {
     fun provideRegisterDnsUsecase(): RegisterDnsUsecase = ErdSdk.registerDnsUsecase()
 
     @Provides
-    fun provideQuerySmartContractUsecase(): QuerySmartContractUsecase = ErdSdk.querySmartContractUsecase()
+    fun provideQueryContractUsecase(): QueryContractUsecase = ErdSdk.queryContractUsecase()
 
     @Provides
-    fun provideCallSmartContractUsecase(): CallContractUsecase = ErdSdk.executeSmartContractUsecase()
+    fun provideCallContractUsecase(): CallContractUsecase = ErdSdk.callContractUsecase()
 
 }
