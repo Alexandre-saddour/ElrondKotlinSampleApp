@@ -7,8 +7,11 @@ import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
 import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
-import com.elrond.erdkotlin.domain.vm.CallContractUsecase
-import com.elrond.erdkotlin.domain.vm.QueryContractUsecase
+import com.elrond.erdkotlin.domain.sc.CallContractUsecase
+import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
+import com.elrond.erdkotlin.domain.vm.query.hex.QueryContractHexUsecase
+import com.elrond.erdkotlin.domain.vm.query.integer.QueryContractIntUsecase
+import com.elrond.erdkotlin.domain.vm.query.string.QueryContractStringUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,6 +55,15 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideQueryContractUsecase(): QueryContractUsecase = ErdSdk.queryContractUsecase()
+
+    @Provides
+    fun provideQueryContractHexUsecase(): QueryContractHexUsecase = ErdSdk.queryContractHexUsecase()
+
+    @Provides
+    fun provideQueryContractStringUsecase(): QueryContractStringUsecase = ErdSdk.queryContractStringUsecase()
+
+    @Provides
+    fun provideQueryContractIntUsecase(): QueryContractIntUsecase = ErdSdk.queryContracInttUsecase()
 
     @Provides
     fun provideCallContractUsecase(): CallContractUsecase = ErdSdk.callContractUsecase()

@@ -3,7 +3,7 @@ package com.elrond.erdkotlin
 import com.elrond.erdkotlin.helper.TestDataProvider.account
 import com.elrond.erdkotlin.helper.TestDataProvider.networkConfig
 import com.elrond.erdkotlin.helper.TestDataProvider.wallet
-import com.elrond.erdkotlin.domain.vm.CallContractUsecase
+import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.elrond.erdkotlin.helper.TestUsecaseProvider.sendTransactionUsecase
 import org.junit.Assert.assertEquals
