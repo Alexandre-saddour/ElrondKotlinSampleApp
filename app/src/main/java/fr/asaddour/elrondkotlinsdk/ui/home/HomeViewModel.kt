@@ -20,6 +20,7 @@ import fr.asaddour.elrondkotlinsdk.utils.SingleLiveEvent
 import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 class HomeViewModel @ViewModelInject constructor(
     private val loadCurrentWalletUsecase: LoadCurrentWalletUsecase,
@@ -94,7 +95,7 @@ class HomeViewModel @ViewModelInject constructor(
 
         val wallet = requireNotNull(wallet)
         val value = when (amount) {
-            null -> 0.toBigInteger()
+            null -> BigInteger.ZERO
             else -> amount.toBigInteger()
         }
         launch(Dispatchers.IO) {
