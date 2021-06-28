@@ -5,6 +5,7 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressBalanceUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
 import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
+import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
@@ -67,5 +68,20 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideCallContractUsecase(): CallContractUsecase = ErdSdk.callContractUsecase()
+
+    @Provides
+    fun provideGetAllEsdtUsecase(): GetAllEsdtUsecase = ErdSdk.getAllEsdtUsecase()
+
+    @Provides
+    fun provideGetAllIssuedEsdtUsecase(): GetAllIssuedEsdtUsecase = ErdSdk.getAllIssuedEsdtUsecase()
+
+    @Provides
+    fun provideGetEsdtBalanceUsecase(): GetEsdtBalanceUsecase = ErdSdk.getEsdtBalanceUsecase()
+
+    @Provides
+    fun provideGetEsdtPropertiesUsecase(): GetEsdtPropertiesUsecase = ErdSdk.getEsdtPropertiesUsecase()
+
+    @Provides
+    fun provideGetEsdtSpecialRolesUsecase(): GetEsdtSpecialRolesUsecase = ErdSdk.getEsdtSpecialRolesUsecase()
 
 }

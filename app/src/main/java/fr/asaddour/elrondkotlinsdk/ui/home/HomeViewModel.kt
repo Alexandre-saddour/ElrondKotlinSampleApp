@@ -12,6 +12,7 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
@@ -31,7 +32,8 @@ class HomeViewModel @ViewModelInject constructor(
     private val pollTransactionStatusUsecase: PollTransactionStatusUsecase,
     private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
-    private val getNetworkConfigUsecase: GetNetworkConfigUsecase
+    private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
+    private val showcaseEsdtUsecase: ShowcaseEsdtUsecase,
 ) : ViewModel() {
 
 
@@ -68,6 +70,7 @@ class HomeViewModel @ViewModelInject constructor(
             )
         }
         _viewState.postValue(state)
+        showcaseEsdtUsecase.execute(address)
         logTransactions(address)
     }
 
