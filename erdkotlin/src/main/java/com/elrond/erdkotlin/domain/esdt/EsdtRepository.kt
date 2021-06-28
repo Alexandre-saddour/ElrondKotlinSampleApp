@@ -1,5 +1,7 @@
 package com.elrond.erdkotlin.domain.esdt
 
+import com.elrond.erdkotlin.domain.esdt.models.EsdtProperties
+import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRoles
 import com.elrond.erdkotlin.domain.esdt.models.EsdtTokenBalance
 import com.elrond.erdkotlin.domain.esdt.models.EsdtToken
 import com.elrond.erdkotlin.domain.wallet.models.Address
@@ -16,9 +18,9 @@ internal interface EsdtRepository {
     fun getAllEsdtIssued(): List<String>
 
     // Get ESDT token properties
-    fun getEsdtProperties(tokenIdentifier: String): Any // TODO
+    fun getEsdtProperties(tokenIdentifier: String): EsdtProperties
 
     // Get special roles for a token
-    fun getEsdtSpecialRoles(tokenIdentifier: String): Any // TODO
+    fun getEsdtSpecialRoles(tokenIdentifier: String): EsdtSpecialRoles?
 
 }

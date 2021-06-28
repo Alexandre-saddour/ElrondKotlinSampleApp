@@ -16,9 +16,7 @@ import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 import com.elrond.erdkotlin.domain.dns.GetDnsRegistrationCostUsecase
-import com.elrond.erdkotlin.domain.esdt.GetAllEsdtUsecase
-import com.elrond.erdkotlin.domain.esdt.GetAllIssuedEsdtUsecase
-import com.elrond.erdkotlin.domain.esdt.GetEsdtBalanceUsecase
+import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.hex.QueryContractHexUsecase
@@ -55,6 +53,8 @@ object ErdSdk {
     fun getAllEsdtUsecase() = GetAllEsdtUsecase(esdtRepository)
     fun getAllIssuedEsdtUsecase() = GetAllIssuedEsdtUsecase(esdtRepository)
     fun getEsdtBalanceUsecase() = GetEsdtBalanceUsecase(esdtRepository)
+    fun getEsdtPropertiesUsecase() = GetEsdtPropertiesUsecase(esdtRepository)
+    fun getEsdtSpecialRolesUsecase() = GetEsdtSpecialRolesUsecase(esdtRepository)
     fun getDnsRegistrationCostUsecase() = GetDnsRegistrationCostUsecase(
         queryContractUsecase(),
         computeDnsAddressUsecase()
@@ -76,7 +76,7 @@ object ErdSdk {
     private val accountRepository = AccountRepositoryImpl(elrondProxy)
     private val transactionRepository = TransactionRepositoryImpl(elrondProxy)
     private val vmRepository = VmRepositoryImpl(elrondProxy)
-    private val esdtRepository = EsdtRepositoryImpl(elrondProxy)
+    private val esdtRepository = EsdtRepositoryImpl(elrondProxy, vmRepository)
 }
 
 sealed class ElrondNetwork {
