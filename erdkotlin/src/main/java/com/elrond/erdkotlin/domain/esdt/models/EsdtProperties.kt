@@ -21,5 +21,5 @@ data class EsdtProperties(
     val canAddSpecialRoles: Boolean,
     val canTransferNftCreateRole: Boolean,
     val nftCreateStopped: Boolean,
-    val numberOfWipedQuantity: BigInteger,
+    val numWiped: BigInteger,
 )

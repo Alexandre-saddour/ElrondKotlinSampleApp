@@ -186,7 +186,7 @@ internal fun QueryContractOutput.toEsdtProperties() = requireNotNull(returnData)
         canAddSpecialRoles = returnDatas[14].extractBoolean("CanAddSpecialRoles"),
         canTransferNftCreateRole = returnDatas[15].extractBoolean("CanTransferNFTCreateRole"),
         nftCreateStopped = returnDatas[16].extractBoolean("NFTCreateStopped"),
-        numberOfWipedQuantity = returnDatas[17].extractBigInteger("NumWiped")
+        numWiped = returnDatas[17].extractBigInteger("NumWiped")
     )
 }
 
