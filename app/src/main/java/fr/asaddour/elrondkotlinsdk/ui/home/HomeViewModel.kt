@@ -33,7 +33,7 @@ class HomeViewModel @ViewModelInject constructor(
     private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
-    private val showcaseEsdtUsecase: ShowcaseEsdtUsecase,
+    private val showcaseEsdtUsecase: ShowcaseEsdtUsecase
 ) : ViewModel() {
 
 
@@ -50,9 +50,9 @@ class HomeViewModel @ViewModelInject constructor(
         // load wallet only once
         val wallet = wallet ?: loadCurrentWalletUsecase.execute()?.also { wallet = it }
 
-        // we don't have any wallet
-        // lets create one
         wallet ?: run {
+            // we don't have any wallet
+            // lets create one
             _viewAction.postValue(HomeAction.OpenCreateWalletScreen)
             return@launch
         }
