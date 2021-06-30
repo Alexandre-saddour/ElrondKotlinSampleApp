@@ -84,4 +84,7 @@ object ErdUsecaseModule {
     @Provides
     fun provideGetEsdtSpecialRolesUsecase(): GetEsdtSpecialRolesUsecase = ErdSdk.getEsdtSpecialRolesUsecase()
 
+    @Provides
+    fun provideIssueEsdtUsecase(): IssueEsdtUsecase = ErdSdk.getIssueEsdtUsecase()
+
 }

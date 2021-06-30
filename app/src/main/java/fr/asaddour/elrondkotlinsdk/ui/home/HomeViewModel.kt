@@ -12,7 +12,8 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
-import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtUsecase
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtApiUsecase
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtIssuanceUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
@@ -33,7 +34,8 @@ class HomeViewModel @ViewModelInject constructor(
     private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
-    private val showcaseEsdtUsecase: ShowcaseEsdtUsecase
+    private val showcaseEsdtIssuanceUsecase: ShowcaseEsdtIssuanceUsecase,
+    private val showcaseEsdtUsecase: ShowcaseEsdtApiUsecase
 ) : ViewModel() {
 
 
@@ -59,17 +61,23 @@ class HomeViewModel @ViewModelInject constructor(
 
         // load account
         val address = Address.fromHex(wallet.publicKeyHex)
-        val account = getAccountUsecase.execute(address).toUi()
+        val account = getAccountUsecase.execute(address)
+        val accountUi = account.toUi()
         val state = when (val state = _viewState.value) {
             is HomeViewState.Content -> state.copy(
-                account = account
+                account = accountUi
             )
             else -> HomeViewState.Content(
-                account = account,
+                account = accountUi,
                 sentTransaction = null
             )
         }
         _viewState.postValue(state)
+        showcaseEsdtIssuanceUsecase.execute(
+            account = account,
+            wallet = wallet,
+            networkConfig = getNetworkConfigUsecase.execute()
+        )
         showcaseEsdtUsecase.execute(address)
         logTransactions(address)
     }

@@ -5,7 +5,7 @@ import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import javax.inject.Inject
 
-class ShowcaseEsdtUsecase @Inject constructor(
+class ShowcaseEsdtApiUsecase @Inject constructor(
     private val getAllEsdtUsecase: GetAllEsdtUsecase,
     private val getAllIssuedEsdtUsecase: GetAllIssuedEsdtUsecase,
     private val getEsdtBalanceUsecase: GetEsdtBalanceUsecase,
