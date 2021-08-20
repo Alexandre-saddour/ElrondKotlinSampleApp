@@ -28,14 +28,17 @@ class ShowcaseEsdtApiUsecase @Inject constructor(
         }
 
         val esdtTokens = try {
-            getAllEsdtUsecase.execute(address).map { esdt ->
-                getEsdtBalanceUsecase.execute(address, esdt.value.tokenIdentifier)
-            }
+            getAllEsdtUsecase.execute(address)
+                .toList()
+                .takeLast(3)
+                .map { (_, esdt) ->
+                    getEsdtBalanceUsecase.execute(address, esdt.tokenIdentifier)
+                }
         } catch (e: Exception) {
             emptyList()
         }
 
-        Log.d(TAG, "Address: ${address.bech32()} has ${esdtTokens.size} esdts")
+        Log.d(TAG, "Address: ${address.bech32} has ${esdtTokens.size} esdts, including:")
         esdtTokens.forEach { esdtToken ->
             Log.d(TAG, "\t- $esdtToken")
         }

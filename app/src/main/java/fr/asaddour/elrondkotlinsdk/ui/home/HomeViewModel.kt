@@ -1,7 +1,6 @@
 package fr.asaddour.elrondkotlinsdk.ui.home
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +11,7 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtApiUsecase
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtIssuanceUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
@@ -23,8 +23,10 @@ import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
+import javax.inject.Inject
 
-class HomeViewModel @ViewModelInject constructor(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val loadCurrentWalletUsecase: LoadCurrentWalletUsecase,
     private val deleteCurrentWalletUsecase: DeleteCurrentWalletUsecase,
     private val getAccountUsecase: GetAccountUsecase,
@@ -72,13 +74,17 @@ class HomeViewModel @ViewModelInject constructor(
                 sentTransaction = null
             )
         }
+
         _viewState.postValue(state)
-        showcaseEsdtIssuanceUsecase.execute(
-            account = account,
-            wallet = wallet,
-            networkConfig = getNetworkConfigUsecase.execute()
-        )
-        showcaseEsdtUsecase.execute(address)
+
+        if (account.balance != BigInteger.ZERO) {
+            showcaseEsdtIssuanceUsecase.execute(
+                account = account,
+                wallet = wallet,
+                networkConfig = getNetworkConfigUsecase.execute()
+            )
+            showcaseEsdtUsecase.execute(address)
+        }
         logTransactions(address)
     }
 

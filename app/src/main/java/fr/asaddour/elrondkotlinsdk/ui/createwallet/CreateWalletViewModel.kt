@@ -1,16 +1,18 @@
 package fr.asaddour.elrondkotlinsdk.ui.createwallet
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.asaddour.elrondkotlinsdk.domain.wallet.CreateWalletUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.SaveWalletUsecase
 import fr.asaddour.elrondkotlinsdk.utils.SingleLiveEvent
 import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class CreateWalletViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CreateWalletViewModel @Inject constructor(
     private val createWalletUsecase: CreateWalletUsecase,
     private val saveWalletUsecase: SaveWalletUsecase
 ) : ViewModel() {
