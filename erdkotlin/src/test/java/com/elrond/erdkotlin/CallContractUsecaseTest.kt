@@ -6,8 +6,7 @@ import com.elrond.erdkotlin.helper.TestDataProvider.wallet
 import com.elrond.erdkotlin.helper.TestUsecaseProvider.sendTransactionUsecase
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.wallet.models.Address
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
@@ -31,8 +30,8 @@ class CallContractUsecaseTest {
         )
 
         assertEquals(
-            sentTransaction.data,
-            "awesomeFunc@FF@5745474C442D616263646566@DEADBEEF"
+            "awesomeFunc@FF@5745474C442D616263646566@DEADBEEF",
+            sentTransaction.data
         )
     }
 
@@ -51,4 +50,5 @@ class CallContractUsecaseTest {
             )
         }
     }
+
 }

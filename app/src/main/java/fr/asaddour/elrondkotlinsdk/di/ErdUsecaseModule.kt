@@ -5,6 +5,8 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressBalanceUsecase
 import com.elrond.erdkotlin.domain.account.GetAddressNonceUsecase
 import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
+import com.elrond.erdkotlin.domain.esdt.*
+import com.elrond.erdkotlin.domain.esdt.management.*
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
@@ -15,10 +17,10 @@ import com.elrond.erdkotlin.domain.vm.query.string.QueryContractStringUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 object ErdUsecaseModule {
 
     // Make Elrond SDk classes injectable.
@@ -67,5 +69,50 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideCallContractUsecase(): CallContractUsecase = ErdSdk.callContractUsecase()
+
+    @Provides
+    fun provideGetAllEsdtUsecase(): GetAllEsdtUsecase = ErdSdk.getAllEsdtUsecase()
+
+    @Provides
+    fun provideGetAllIssuedEsdtUsecase(): GetAllIssuedEsdtUsecase = ErdSdk.getAllIssuedEsdtUsecase()
+
+    @Provides
+    fun provideGetEsdtBalanceUsecase(): GetEsdtBalanceUsecase = ErdSdk.getEsdtBalanceUsecase()
+
+    @Provides
+    fun provideGetEsdtPropertiesUsecase(): GetEsdtPropertiesUsecase = ErdSdk.getEsdtPropertiesUsecase()
+
+    @Provides
+    fun provideGetEsdtSpecialRolesUsecase(): GetEsdtSpecialRolesUsecase = ErdSdk.getEsdtSpecialRolesUsecase()
+
+    @Provides
+    fun provideIssueEsdtUsecase(): IssueEsdtUsecase = ErdSdk.getIssueEsdtUsecase()
+
+    @Provides
+    fun provideBurnEsdtUsecase(): BurnEsdtUsecase = ErdSdk.getBurnEsdtUsecase()
+
+    @Provides
+    fun provideChangeOwnerEsdtUsecase(): ChangeOwnerEsdtUsecase = ErdSdk.getChangeOwnerEsdtUsecase()
+
+    @Provides
+    fun provideFreezeAccountEsdtUsecase(): FreezeAccountEsdtUsecase = ErdSdk.getFreezeAccountEsdtUsecase()
+
+    @Provides
+    fun provideMintEsdtUsecase(): MintEsdtUsecase = ErdSdk.getMintEsdtUsecase()
+
+    @Provides
+    fun providePauseAccountEsdtUsecase(): PauseAccountEsdtUsecase = ErdSdk.getPauseAccountEsdtUsecase()
+
+    @Provides
+    fun provideSetSpecialRolesToAccountEsdtUsecase(): SetSpecialRolesEsdtUsecase = ErdSdk.getSetSpecialRolesToAccountEsdtUsecase()
+
+    @Provides
+    fun provideTransferEsdtUsecase(): TransferEsdtUsecase = ErdSdk.getTransferEsdtUsecase()
+
+    @Provides
+    fun provideUpgradeEsdtUsecase(): UpgradeEsdtUsecase = ErdSdk.getUpgradeEsdtUsecase()
+
+    @Provides
+    fun provideWipeAccountEsdtUsecase(): WipeAccountEsdtUsecase = ErdSdk.getWipeAccountEsdtUsecase()
 
 }

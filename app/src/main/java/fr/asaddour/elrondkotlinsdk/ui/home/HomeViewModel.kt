@@ -1,7 +1,6 @@
 package fr.asaddour.elrondkotlinsdk.ui.home
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +11,9 @@ import com.elrond.erdkotlin.domain.account.GetAccountUsecase
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
+import dagger.hilt.android.lifecycle.HiltViewModel
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtApiUsecase
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtIssuanceUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
@@ -20,8 +22,11 @@ import fr.asaddour.elrondkotlinsdk.utils.SingleLiveEvent
 import fr.asaddour.elrondkotlinsdk.utils.ext.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
+import javax.inject.Inject
 
-class HomeViewModel @ViewModelInject constructor(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val loadCurrentWalletUsecase: LoadCurrentWalletUsecase,
     private val deleteCurrentWalletUsecase: DeleteCurrentWalletUsecase,
     private val getAccountUsecase: GetAccountUsecase,
@@ -30,7 +35,9 @@ class HomeViewModel @ViewModelInject constructor(
     private val pollTransactionStatusUsecase: PollTransactionStatusUsecase,
     private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
-    private val getNetworkConfigUsecase: GetNetworkConfigUsecase
+    private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
+    private val showcaseEsdtIssuanceUsecase: ShowcaseEsdtIssuanceUsecase,
+    private val showcaseEsdtUsecase: ShowcaseEsdtApiUsecase
 ) : ViewModel() {
 
 
@@ -47,26 +54,37 @@ class HomeViewModel @ViewModelInject constructor(
         // load wallet only once
         val wallet = wallet ?: loadCurrentWalletUsecase.execute()?.also { wallet = it }
 
-        // we don't have any wallet
-        // lets create one
         wallet ?: run {
+            // we don't have any wallet
+            // lets create one
             _viewAction.postValue(HomeAction.OpenCreateWalletScreen)
             return@launch
         }
 
         // load account
         val address = Address.fromHex(wallet.publicKeyHex)
-        val account = getAccountUsecase.execute(address).toUi()
+        val account = getAccountUsecase.execute(address)
+        val accountUi = account.toUi()
         val state = when (val state = _viewState.value) {
             is HomeViewState.Content -> state.copy(
-                account = account
+                account = accountUi
             )
             else -> HomeViewState.Content(
-                account = account,
+                account = accountUi,
                 sentTransaction = null
             )
         }
+
         _viewState.postValue(state)
+
+        if (account.balance != BigInteger.ZERO) {
+            showcaseEsdtIssuanceUsecase.execute(
+                account = account,
+                wallet = wallet,
+                networkConfig = getNetworkConfigUsecase.execute()
+            )
+            showcaseEsdtUsecase.execute(address)
+        }
         logTransactions(address)
     }
 
@@ -94,7 +112,7 @@ class HomeViewModel @ViewModelInject constructor(
 
         val wallet = requireNotNull(wallet)
         val value = when (amount) {
-            null -> 0.toBigInteger()
+            null -> BigInteger.ZERO
             else -> amount.toBigInteger()
         }
         launch(Dispatchers.IO) {
