@@ -1,7 +1,6 @@
 package fr.asaddour.elrondkotlinsdk
 
 import android.app.Application
-import android.content.Context
 import com.elrond.erdkotlin.ErdSdk
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.logging.HttpLoggingInterceptor
