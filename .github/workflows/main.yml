@@ -25,20 +25,4 @@ jobs:
       - name: Test SDK
         run: ./gradlew erdkotlin:test
 
-  build-test-app:
-    needs: build-test-sdk
-    runs-on: macos-latest
-    steps:
-      # init
-      - name: Checkout the code
-        uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      # build and test
-      - name: Build App
-        run: ./gradlew app:build
-      - name: Test App
-        run: ./gradlew app:test
 
