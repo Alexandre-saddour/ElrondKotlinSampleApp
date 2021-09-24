@@ -9,7 +9,7 @@ project.afterEvaluate {
         publications {
             maven(MavenPublication) {
                 groupId pomGroupID
-                artifactId project.name
+                artifactId artifactName
                 version pomVersion
 
                 from components.kotlin
