@@ -16,7 +16,7 @@ data class TransactionInfo(
     val receiverUsername: String?,
     val gasPrice: Long,
     val gasLimit: Long,
-    val data: String?, // base64 encoded
+    val data: String?,
     val signature: String,
     val sourceShard: Long,
     val destinationShard: Long,
