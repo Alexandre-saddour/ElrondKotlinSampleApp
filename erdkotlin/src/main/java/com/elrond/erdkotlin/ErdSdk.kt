@@ -18,6 +18,7 @@ import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 import com.elrond.erdkotlin.domain.dns.GetDnsRegistrationCostUsecase
 import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.esdt.management.*
+import com.elrond.erdkotlin.domain.esdt.utils.ValidateTokenNameAndTickerUsecase
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.hex.QueryContractHexUsecase
@@ -56,7 +57,10 @@ object ErdSdk {
     fun getEsdtBalanceUsecase() = GetEsdtBalanceUsecase(esdtRepository)
     fun getEsdtPropertiesUsecase() = GetEsdtPropertiesUsecase(esdtRepository)
     fun getEsdtSpecialRolesUsecase() = GetEsdtSpecialRolesUsecase(esdtRepository)
-    fun getIssueEsdtUsecase() = IssueEsdtUsecase(sendTransactionUsecase())
+    fun getIssueEsdtUsecase() = IssueEsdtUsecase(
+        validateTokenNameAndTickerUsecase,
+        sendTransactionUsecase()
+    )
     fun getBurnEsdtUsecase() = BurnEsdtUsecase(sendTransactionUsecase())
     fun getChangeOwnerEsdtUsecase() = ChangeOwnerEsdtUsecase(sendTransactionUsecase())
     fun getFreezeAccountEsdtUsecase() = FreezeAccountEsdtUsecase(sendTransactionUsecase())
@@ -88,6 +92,7 @@ object ErdSdk {
     private val transactionRepository = TransactionRepositoryImpl(elrondProxy)
     private val vmRepository = VmRepositoryImpl(elrondProxy)
     private val esdtRepository = EsdtRepositoryImpl(elrondProxy, vmRepository)
+    private val validateTokenNameAndTickerUsecase = ValidateTokenNameAndTickerUsecase()
 }
 
 sealed class ElrondNetwork(open val url: String) {

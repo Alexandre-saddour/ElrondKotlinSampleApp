@@ -3,6 +3,7 @@ package com.elrond.erdkotlin.domain.esdt.management
 import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.esdt.EsdtConstants
 import com.elrond.erdkotlin.domain.esdt.models.ManagementProperty
+import com.elrond.erdkotlin.domain.esdt.utils.ValidateTokenNameAndTickerUsecase
 import com.elrond.erdkotlin.domain.networkconfig.models.NetworkConfig
 import com.elrond.erdkotlin.domain.sc.ScUtils
 import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
@@ -13,6 +14,7 @@ import com.elrond.erdkotlin.utils.toHexString
 import java.math.BigInteger
 
 class IssueEsdtUsecase internal constructor(
+    private val validateTokenNameAndTickerUsecase: ValidateTokenNameAndTickerUsecase,
     private val sendTransactionUsecase: SendTransactionUsecase
 ) {
 
@@ -83,21 +85,10 @@ class IssueEsdtUsecase internal constructor(
         numberOfDecimal: Int,
         managementProperties: Map<ManagementProperty, Boolean> = emptyMap()
     ): Transaction {
-        if (!tokenName.matches("^[A-Za-z0-9]{3,20}$".toRegex())) {
-            throw IllegalArgumentException(
-                "tokenName length should be between 3 and 20 characters " +
-                        "and alphanumeric only"
-            )
-        }
-        if (!tokenTicker.matches("^[A-Z0-9]{3,10}$".toRegex())) {
-            throw IllegalArgumentException(
-                "tokenTicker length should be between 3 and 10 characters " +
-                        "and alphanumeric uppercase only"
-            )
-        }
-        if (numberOfDecimal < 0 || numberOfDecimal > 18) {
-            throw IllegalArgumentException("numberOfDecimal should be between 0 and 18")
-        }
+        // validate parameters
+        validateParameters(tokenName, tokenTicker, numberOfDecimal, managementProperties)
+
+        // prepare transaction arguments.
         val args = mutableListOf(
             tokenName.toHex(),
             tokenTicker.toHex(),
@@ -111,12 +102,13 @@ class IssueEsdtUsecase internal constructor(
             }
         }
 
+        // send it
         return sendTransactionUsecase.execute(
             Transaction(
                 sender = account.address,
                 receiver = EsdtConstants.ESDT_SC_ADDR,
-                value = issuingCost,
-                gasLimit = 60000000,
+                value = EsdtConstants.ESDT_ISSUING_COST,
+                gasLimit = EsdtConstants.ESDT_MANAGEMENT_GAS_LIMIT,
                 gasPrice = gasPrice,
                 data = args.fold("issue") { it1, it2 -> "$it1@$it2" },
                 chainID = networkConfig.chainID,
@@ -124,11 +116,37 @@ class IssueEsdtUsecase internal constructor(
             ),
             wallet
         )
+    }
 
+    fun validateParameters(
+        tokenName: String,
+        tokenTicker: String,
+        numberOfDecimal: Int,
+        managementProperties: Map<ManagementProperty, Boolean> = emptyMap()
+    ) {
+        validateTokenNameAndTickerUsecase.execute(tokenName = tokenName, tokenTicker = tokenTicker)
+        if (numberOfDecimal < 0 || numberOfDecimal > 18) {
+            throw IllegalArgumentException("numberOfDecimal should be between 0 and 18")
+        }
+        val unsupportedProperties = managementProperties.map { it.key }.filterNot { property ->
+            listOfSupportedProperties.contains(property)
+        }
+        if (unsupportedProperties.isNotEmpty()){
+            throw IllegalArgumentException("Found unsupported properties : $unsupportedProperties")
+        }
     }
 
     companion object {
-        private val issuingCost = "50000000000000000".toBigInteger() // 0.05 EGLD
+        private val listOfSupportedProperties = listOf(
+            ManagementProperty.CanPause,
+            ManagementProperty.CanFreeze,
+            ManagementProperty.CanWipe,
+            ManagementProperty.CanMint,
+            ManagementProperty.CanBurn,
+            ManagementProperty.CanAddSpecialRoles,
+            ManagementProperty.CanChangeOwner,
+            ManagementProperty.CanUpgrade,
+        )
     }
 
 }

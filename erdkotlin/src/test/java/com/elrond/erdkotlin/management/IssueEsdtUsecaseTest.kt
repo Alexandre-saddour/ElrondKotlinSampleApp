@@ -2,131 +2,58 @@ package com.elrond.erdkotlin.management
 
 import com.elrond.erdkotlin.domain.esdt.management.IssueEsdtUsecase
 import com.elrond.erdkotlin.domain.esdt.models.ManagementProperty
+import com.elrond.erdkotlin.domain.esdt.utils.ValidateTokenNameAndTickerUsecase
+import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
+import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 import com.elrond.erdkotlin.helper.TestDataProvider.account
 import com.elrond.erdkotlin.helper.TestDataProvider.networkConfig
 import com.elrond.erdkotlin.helper.TestDataProvider.wallet
-import com.elrond.erdkotlin.helper.TestUsecaseProvider.sendTransactionUsecase
+import com.elrond.erdkotlin.helper.TestUsecaseProvider
 import junit.framework.Assert.assertEquals
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mockito.*
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
 class IssueEsdtUsecaseTest {
 
-    private val issueEsdtUsecase = IssueEsdtUsecase(sendTransactionUsecase)
+    @Spy
+    private val validateTokenNameAndTickerUsecase = ValidateTokenNameAndTickerUsecase()
+
+    @Spy
+    private val sendTransactionUsecase = SendTransactionUsecase(
+        SignTransactionUsecase(),
+        TestUsecaseProvider.transactionRepository
+    )
+
+    @InjectMocks
+    lateinit var issueEsdtUsecase: IssueEsdtUsecase
 
     @Test
-    fun `tokenName name length should not be lower than 3`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "a",
-                tokenTicker = "EKT",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
+    fun `issueEsdtUsecase should check name and ticker`(){
 
-    @Test
-    fun `tokenName name length should not be bigger than 20`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abcefghijklmnopqrstuv",
-                tokenTicker = "EKT",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
+        val tokenName = "abcefg"
+        val tokenTicker = "EKT"
+        issueEsdtUsecase.execute(
+            account = account,
+            wallet = wallet,
+            networkConfig = networkConfig,
+            gasPrice = networkConfig.minGasPrice,
+            tokenName = tokenName,
+            tokenTicker = tokenTicker,
+            initialSupply = 100000.toBigInteger(),
+            numberOfDecimal = 3
+        )
 
-    @Test
-    fun `tokenName name should be alphanumeric`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abc-efg",
-                tokenTicker = "EKT",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
-
-    @Test
-    fun `tokenTicker name length should not be lower than 3`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abcde",
-                tokenTicker = "E",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
-
-    @Test
-    fun `tokenTicker name length should not be bigger than 10`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abc",
-                tokenTicker = "ABCDEFGHIJK",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
-
-    @Test
-    fun `tokenTicker name should be uppercase`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abcefg",
-                tokenTicker = "ekt",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
-    }
-
-    @Test
-    fun `tokenTicker name should be alphanumeric`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
-            issueEsdtUsecase.execute(
-                account = account,
-                wallet = wallet,
-                networkConfig = networkConfig,
-                gasPrice = networkConfig.minGasPrice,
-                tokenName = "abcefg",
-                tokenTicker = "EK-T",
-                initialSupply = 100000.toBigInteger(),
-                numberOfDecimal = 3
-            )
-        }
+        verify(validateTokenNameAndTickerUsecase, times(1)).execute(
+            tokenName,
+            tokenTicker,
+        )
     }
 
     @Test
@@ -157,6 +84,27 @@ class IssueEsdtUsecaseTest {
                 tokenTicker = "EKT",
                 initialSupply = 100000.toBigInteger(),
                 numberOfDecimal = 19
+            )
+        }
+    }
+
+
+    @Test
+    fun `should not set unsupported managementProperties`() {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
+            issueEsdtUsecase.execute(
+                account = account,
+                wallet = wallet,
+                networkConfig = networkConfig,
+                gasPrice = networkConfig.minGasPrice,
+                tokenName = "abcefg",
+                tokenTicker = "EKT",
+                initialSupply = 100000.toBigInteger(),
+                numberOfDecimal = 3,
+                managementProperties = mapOf(
+                    ManagementProperty.CanFreeze to true,
+                    ManagementProperty.CanTransferNFTCreateRole to true
+                )
             )
         }
     }
