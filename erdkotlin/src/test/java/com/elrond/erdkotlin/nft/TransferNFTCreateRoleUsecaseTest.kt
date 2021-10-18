@@ -1,6 +1,5 @@
 package com.elrond.erdkotlin.nft
 
-import com.elrond.erdkotlin.domain.esdt.management.IssueEsdtUsecase
 import com.elrond.erdkotlin.domain.nft.TransferNFTCreateRoleUsecase
 import com.elrond.erdkotlin.domain.transaction.SendTransactionUsecase
 import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
