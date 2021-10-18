@@ -19,6 +19,9 @@ import com.elrond.erdkotlin.domain.dns.GetDnsRegistrationCostUsecase
 import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.esdt.management.*
 import com.elrond.erdkotlin.domain.esdt.utils.ValidateTokenNameAndTickerUsecase
+import com.elrond.erdkotlin.domain.nft.CreateNftUsecase
+import com.elrond.erdkotlin.domain.nft.IssueNftUsecase
+import com.elrond.erdkotlin.domain.nft.TransferNFTCreateRoleUsecase
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.hex.QueryContractHexUsecase
@@ -58,7 +61,7 @@ object ErdSdk {
     fun getEsdtPropertiesUsecase() = GetEsdtPropertiesUsecase(esdtRepository)
     fun getEsdtSpecialRolesUsecase() = GetEsdtSpecialRolesUsecase(esdtRepository)
     fun getIssueEsdtUsecase() = IssueEsdtUsecase(
-        validateTokenNameAndTickerUsecase,
+        validateTokenNameAndTickerUsecase(),
         sendTransactionUsecase()
     )
     fun getBurnEsdtUsecase() = BurnEsdtUsecase(sendTransactionUsecase())
@@ -70,6 +73,20 @@ object ErdSdk {
     fun getTransferEsdtUsecase() = TransferEsdtUsecase(sendTransactionUsecase())
     fun getUpgradeEsdtUsecase() = UpgradeEsdtUsecase(sendTransactionUsecase())
     fun getWipeAccountEsdtUsecase() = WipeAccountEsdtUsecase(sendTransactionUsecase())
+
+    fun getCreateNftUsecase() = CreateNftUsecase(
+        sendTransactionUsecase()
+    )
+
+    fun getIssueNftUsecase() = IssueNftUsecase(
+        validateTokenNameAndTickerUsecase(),
+        sendTransactionUsecase()
+    )
+
+    fun getTransferNFTCreateRoleUsecase() = TransferNFTCreateRoleUsecase(
+        sendTransactionUsecase()
+    )
+
     fun getDnsRegistrationCostUsecase() = GetDnsRegistrationCostUsecase(
         queryContractUsecase(),
         computeDnsAddressUsecase()
@@ -84,15 +101,16 @@ object ErdSdk {
     fun checkUsernameUsecase() = CheckUsernameUsecase()
 
     internal fun computeDnsAddressUsecase() = ComputeDnsAddressUsecase(checkUsernameUsecase())
+    internal fun validateTokenNameAndTickerUsecase() = ValidateTokenNameAndTickerUsecase()
+
 
     val elrondHttpClientBuilder = OkHttpClient.Builder()
-    private val elrondProxy = ElrondProxy(ElrondNetwork.TestNet.url, elrondHttpClientBuilder)
+    private val elrondProxy = ElrondProxy(ElrondNetwork.DevNet.url, elrondHttpClientBuilder)
     private val networkConfigRepository = NetworkConfigRepositoryImpl(elrondProxy)
     private val accountRepository = AccountRepositoryImpl(elrondProxy)
     private val transactionRepository = TransactionRepositoryImpl(elrondProxy)
     private val vmRepository = VmRepositoryImpl(elrondProxy)
     private val esdtRepository = EsdtRepositoryImpl(elrondProxy, vmRepository)
-    private val validateTokenNameAndTickerUsecase = ValidateTokenNameAndTickerUsecase()
 }
 
 sealed class ElrondNetwork(open val url: String) {
