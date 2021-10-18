@@ -9,4 +9,5 @@ internal fun String.isDigitsOnly(): Boolean {
 }
 
 fun String.toHex() = String(Hex.encode(toByteArray(StandardCharsets.UTF_8)))
+fun String.hexToString() = String(Hex.decode(toByteArray(StandardCharsets.UTF_8)))
 fun String.toHexBytes() = Hex.encode(toByteArray(StandardCharsets.UTF_8))
