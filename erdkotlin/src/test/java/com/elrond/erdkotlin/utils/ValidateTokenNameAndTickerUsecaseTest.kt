@@ -4,7 +4,7 @@ import com.elrond.erdkotlin.domain.esdt.utils.ValidateTokenNameAndTickerUsecase
 import org.junit.Assert
 import org.junit.Test
 
-class ValidateTokenNameTickerUsecaseTest {
+class ValidateTokenNameAndTickerUsecaseTest {
 
     private val usecase = ValidateTokenNameAndTickerUsecase()
 
