@@ -5,6 +5,7 @@ import com.elrond.erdkotlin.data.toEsdtProperties
 import com.elrond.erdkotlin.data.toSpecialRoles
 import com.elrond.erdkotlin.domain.esdt.EsdtConstants
 import com.elrond.erdkotlin.domain.esdt.EsdtRepository
+import com.elrond.erdkotlin.domain.esdt.GetAllIssuedEsdtUsecase
 import com.elrond.erdkotlin.domain.esdt.models.EsdtProperties
 import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRoles
 import com.elrond.erdkotlin.domain.esdt.models.EsdtTokenBalance
@@ -27,8 +28,8 @@ internal class EsdtRepositoryImpl(
         return requireNotNull(elrondProxy.getEsdtBalance(address, tokenIdentifier).data).tokenData
     }
 
-    override fun getAllEsdtIssued(): List<String> {
-        return requireNotNull(elrondProxy.getAllIssuedEsdt().data).tokens
+    override fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): List<String> {
+        return requireNotNull(elrondProxy.getAllTokenIssued(type).data).tokens
     }
 
     override fun getEsdtProperties(tokenIdentifier: String): EsdtProperties {

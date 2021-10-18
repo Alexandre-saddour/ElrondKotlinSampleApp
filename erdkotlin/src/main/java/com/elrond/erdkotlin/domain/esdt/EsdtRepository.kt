@@ -14,8 +14,8 @@ internal interface EsdtRepository {
     // Get balance for an address and an ESDT token
     fun getEsdtBalance(address: Address, tokenIdentifier: String): EsdtTokenBalance
 
-    // Get all issued ESDT tokens
-    fun getAllEsdtIssued(): List<String>
+    // Get all issued ESDT/Fungible/Sft/Nft tokens
+    fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): List<String>
 
     // Get ESDT token properties
     fun getEsdtProperties(tokenIdentifier: String): EsdtProperties

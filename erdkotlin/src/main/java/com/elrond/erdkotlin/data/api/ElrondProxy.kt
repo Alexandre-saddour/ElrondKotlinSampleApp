@@ -113,10 +113,15 @@ internal class ElrondProxy(
         return elrondClient.doGet("address/${address.bech32}/esdt/$tokenIdentifier")
     }
 
-
-    // Get all issued ESDT tokens
-    fun getAllIssuedEsdt(): ElrondClient.ResponseBase<GetAllIssuedEsdtResponse> {
-        return elrondClient.doGet("network/esdts")
+    // Get all issued ESDT/Fungible/Sft/Nft tokens
+    fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): ElrondClient.ResponseBase<GetAllIssuedEsdtResponse> {
+        val endpoint = when (type){
+            GetAllIssuedEsdtUsecase.Type.ESDT -> "network/esdts"
+            GetAllIssuedEsdtUsecase.Type.Fungible -> "esdt/fungible-tokens"
+            GetAllIssuedEsdtUsecase.Type.SFT -> "esdt/semi-fungible-tokens"
+            GetAllIssuedEsdtUsecase.Type.NFT -> "esdt/non-fungible-tokens"
+        }
+        return elrondClient.doGet(endpoint)
     }
 
     /** Private **/
