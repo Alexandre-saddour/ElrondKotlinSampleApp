@@ -14,6 +14,7 @@ import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtApiUsecase
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtIssuanceUsecase
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseNftIssuanceUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
@@ -36,6 +37,7 @@ class HomeViewModel @Inject constructor(
     private val pollTransactionInfoUsecase: PollTransactionInfoUsecase,
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
+    private val showcaseNftIssuanceUsecase: ShowcaseNftIssuanceUsecase,
     private val showcaseEsdtIssuanceUsecase: ShowcaseEsdtIssuanceUsecase,
     private val showcaseEsdtUsecase: ShowcaseEsdtApiUsecase
 ) : ViewModel() {
@@ -78,14 +80,21 @@ class HomeViewModel @Inject constructor(
         _viewState.postValue(state)
 
         if (account.balance != BigInteger.ZERO) {
-            showcaseEsdtIssuanceUsecase.execute(
+            showcaseNftIssuanceUsecase.execute(
                 account = account,
                 wallet = wallet,
                 networkConfig = getNetworkConfigUsecase.execute()
             )
-            showcaseEsdtUsecase.execute(address)
+//            showcaseEsdtIssuanceUsecase.execute(
+//                account = account,
+//                wallet = wallet,
+//                networkConfig = getNetworkConfigUsecase.execute()
+//            )
+//            showcaseEsdtUsecase.execute(address)
+
+
         }
-        logTransactions(address)
+//        logTransactions(address)
     }
 
     // keeping this until a dedicated screen is done.
