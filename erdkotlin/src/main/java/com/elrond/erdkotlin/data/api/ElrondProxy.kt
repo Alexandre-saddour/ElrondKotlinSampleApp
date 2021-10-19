@@ -117,9 +117,9 @@ internal class ElrondProxy(
     fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): ElrondClient.ResponseBase<GetAllIssuedEsdtResponse> {
         val endpoint = when (type){
             GetAllIssuedEsdtUsecase.Type.ESDT -> "network/esdts"
-            GetAllIssuedEsdtUsecase.Type.Fungible -> "esdt/fungible-tokens"
-            GetAllIssuedEsdtUsecase.Type.SFT -> "esdt/semi-fungible-tokens"
-            GetAllIssuedEsdtUsecase.Type.NFT -> "esdt/non-fungible-tokens"
+            GetAllIssuedEsdtUsecase.Type.Fungible -> "network/esdt/fungible-tokens"
+            GetAllIssuedEsdtUsecase.Type.SFT -> "network/esdt/semi-fungible-tokens"
+            GetAllIssuedEsdtUsecase.Type.NFT -> "network/esdt/non-fungible-tokens"
         }
         return elrondClient.doGet(endpoint)
     }
