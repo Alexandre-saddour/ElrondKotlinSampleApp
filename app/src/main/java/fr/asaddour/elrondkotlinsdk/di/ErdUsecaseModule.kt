@@ -8,6 +8,8 @@ import com.elrond.erdkotlin.domain.dns.RegisterDnsUsecase
 import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.esdt.management.*
 import com.elrond.erdkotlin.domain.networkconfig.GetNetworkConfigUsecase
+import com.elrond.erdkotlin.domain.nft.GetNftDataUsecase
+import com.elrond.erdkotlin.domain.nft.GetNftsRegisteredUsecase
 import com.elrond.erdkotlin.domain.transaction.*
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
@@ -114,5 +116,17 @@ object ErdUsecaseModule {
 
     @Provides
     fun provideWipeAccountEsdtUsecase(): WipeAccountEsdtUsecase = ErdSdk.getWipeAccountEsdtUsecase()
+
+    @Provides
+    fun provideGetAllRolesForTokensUsecase(): GetAllRolesForTokensUsecase = ErdSdk.getAllRolesForTokensUsecase()
+
+    @Provides
+    fun provideGetTokensWithRoleUsecase(): GetTokensWithRoleUsecase = ErdSdk.getTokensWithRoleUsecase()
+
+    @Provides
+    fun provideGetNftDataUsecase(): GetNftDataUsecase = ErdSdk.getNftDataUsecase()
+
+    @Provides
+    fun provideGetNftsRegisteredUsecase(): GetNftsRegisteredUsecase = ErdSdk.getNftsRegisteredUsecase()
 
 }

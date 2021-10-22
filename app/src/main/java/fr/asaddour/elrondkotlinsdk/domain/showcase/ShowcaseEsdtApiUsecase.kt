@@ -2,6 +2,7 @@ package fr.asaddour.elrondkotlinsdk.domain.showcase
 
 import android.util.Log
 import com.elrond.erdkotlin.domain.esdt.*
+import com.elrond.erdkotlin.domain.esdt.models.EsdtTokenType
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class ShowcaseEsdtApiUsecase @Inject constructor(
 ) {
 
     fun execute(address: Address) {
-        val allEsdtIssued = getAllIssuedEsdtUsecase.execute()
+        val allEsdtIssued = getAllIssuedEsdtUsecase.execute(EsdtTokenType.ESDT)
         Log.d(TAG, "There are ${allEsdtIssued.size} ESDT tokens issued on the network")
 
         for (esdt in allEsdtIssued) {

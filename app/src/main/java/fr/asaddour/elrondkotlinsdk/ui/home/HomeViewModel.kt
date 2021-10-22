@@ -14,6 +14,7 @@ import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtApiUsecase
 import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseEsdtIssuanceUsecase
+import fr.asaddour.elrondkotlinsdk.domain.showcase.ShowcaseNftApiUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionInfoUsecase
 import fr.asaddour.elrondkotlinsdk.domain.transaction.PollTransactionStatusUsecase
 import fr.asaddour.elrondkotlinsdk.domain.wallet.DeleteCurrentWalletUsecase
@@ -37,7 +38,8 @@ class HomeViewModel @Inject constructor(
     private val getAddressTransactionsUsecase: GetAddressTransactionsUsecase,
     private val getNetworkConfigUsecase: GetNetworkConfigUsecase,
     private val showcaseEsdtIssuanceUsecase: ShowcaseEsdtIssuanceUsecase,
-    private val showcaseEsdtUsecase: ShowcaseEsdtApiUsecase
+    private val showcaseApiEsdtUsecase: ShowcaseEsdtApiUsecase,
+    private val showcaseNftApiUsecase: ShowcaseNftApiUsecase
 ) : ViewModel() {
 
 
@@ -83,7 +85,8 @@ class HomeViewModel @Inject constructor(
                 wallet = wallet,
                 networkConfig = getNetworkConfigUsecase.execute()
             )
-            showcaseEsdtUsecase.execute(address)
+            showcaseApiEsdtUsecase.execute(address)
+            showcaseNftApiUsecase.execute(address)
         }
         logTransactions(address)
     }
