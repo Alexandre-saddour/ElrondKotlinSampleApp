@@ -8,6 +8,9 @@ import com.elrond.erdkotlin.data.esdt.response.GetAllEsdtResponse
 import com.elrond.erdkotlin.data.esdt.response.GetAllIssuedEsdtResponse
 import com.elrond.erdkotlin.data.esdt.response.GetEsdtBalanceResponse
 import com.elrond.erdkotlin.data.networkconfig.GetNetworkConfigResponse
+import com.elrond.erdkotlin.data.esdt.response.GetAllRolesForTokensResponse
+import com.elrond.erdkotlin.data.nft.response.GetNftDataResponse
+import com.elrond.erdkotlin.data.nft.response.TokenListResponse
 import com.elrond.erdkotlin.data.transaction.responses.EstimateCostOfTransactionResponse
 import com.elrond.erdkotlin.data.transaction.responses.GetTransactionInfoResponse
 import com.elrond.erdkotlin.data.transaction.responses.GetTransactionStatusResponse
@@ -16,6 +19,8 @@ import com.elrond.erdkotlin.data.vm.responses.QueryContractDigitResponse
 import com.elrond.erdkotlin.domain.vm.query.QueryContractInput
 import com.elrond.erdkotlin.data.vm.responses.QueryContractResponse
 import com.elrond.erdkotlin.data.vm.responses.QueryContractStringResponse
+import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRole
+import com.elrond.erdkotlin.domain.esdt.models.EsdtTokenType
 import com.elrond.erdkotlin.domain.transaction.models.Transaction
 import com.elrond.erdkotlin.domain.wallet.models.Address
 import com.google.gson.Gson
@@ -114,14 +119,53 @@ internal class ElrondProxy(
     }
 
     // Get all issued ESDT/Fungible/Sft/Nft tokens
-    fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): ElrondClient.ResponseBase<GetAllIssuedEsdtResponse> {
+    fun getAllTokenIssued(type: EsdtTokenType): ElrondClient.ResponseBase<GetAllIssuedEsdtResponse> {
         val endpoint = when (type){
-            GetAllIssuedEsdtUsecase.Type.ESDT -> "network/esdts"
-            GetAllIssuedEsdtUsecase.Type.Fungible -> "network/esdt/fungible-tokens"
-            GetAllIssuedEsdtUsecase.Type.SFT -> "network/esdt/semi-fungible-tokens"
-            GetAllIssuedEsdtUsecase.Type.NFT -> "network/esdt/non-fungible-tokens"
+            EsdtTokenType.ESDT -> "network/esdts"
+            EsdtTokenType.Fungible -> "network/esdt/fungible-tokens"
+            EsdtTokenType.SFT -> "network/esdt/semi-fungible-tokens"
+            EsdtTokenType.NFT -> "network/esdt/non-fungible-tokens"
         }
         return elrondClient.doGet(endpoint)
+    }
+
+    // Get all roles for tokens of an address
+    fun getAllRolesForTokens(
+        address: Address
+    ): ElrondClient.ResponseBase<GetAllRolesForTokensResponse> {
+        return elrondClient.doGet(
+            "address/${address.bech32}/esdts/roles"
+        )
+    }
+
+    // Get tokens where an address has a given role
+    fun getTokensWithRole(
+        address: Address,
+        role: EsdtSpecialRole
+    ): ElrondClient.ResponseBase<TokenListResponse> {
+        return elrondClient.doGet(
+            "address/${address.bech32}/esdts-with-role/$role"
+        )
+    }
+
+    /** NFT **/
+
+    // Get NFT data for an address
+    fun getNftData(
+        address: Address,
+        tokenIdentifier: String,
+        nonce: Long // The nonce after the NFT creation.
+    ): ElrondClient.ResponseBase<GetNftDataResponse> {
+        return elrondClient.doGet(
+            "address/${address.bech32}/nft/$tokenIdentifier/nonce/$nonce"
+        )
+    }
+
+    // Get NFTs/SFTs registered by an address
+    fun getNftsRegistered(address: Address): ElrondClient.ResponseBase<TokenListResponse> {
+        return elrondClient.doGet(
+            "address/${address.bech32}/registered-nfts"
+        )
     }
 
     /** Private **/
@@ -144,6 +188,4 @@ internal class ElrondProxy(
             return args
         }
     }
-
-
 }

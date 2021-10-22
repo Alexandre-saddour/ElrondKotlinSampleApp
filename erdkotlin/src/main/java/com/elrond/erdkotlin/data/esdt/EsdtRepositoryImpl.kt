@@ -6,10 +6,7 @@ import com.elrond.erdkotlin.data.toSpecialRoles
 import com.elrond.erdkotlin.domain.esdt.EsdtConstants
 import com.elrond.erdkotlin.domain.esdt.EsdtRepository
 import com.elrond.erdkotlin.domain.esdt.GetAllIssuedEsdtUsecase
-import com.elrond.erdkotlin.domain.esdt.models.EsdtProperties
-import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRoles
-import com.elrond.erdkotlin.domain.esdt.models.EsdtTokenBalance
-import com.elrond.erdkotlin.domain.esdt.models.EsdtToken
+import com.elrond.erdkotlin.domain.esdt.models.*
 import com.elrond.erdkotlin.domain.vm.VmRepository
 import com.elrond.erdkotlin.domain.vm.query.QueryContractInput
 import com.elrond.erdkotlin.domain.wallet.models.Address
@@ -28,7 +25,7 @@ internal class EsdtRepositoryImpl(
         return requireNotNull(elrondProxy.getEsdtBalance(address, tokenIdentifier).data).tokenData
     }
 
-    override fun getAllTokenIssued(type: GetAllIssuedEsdtUsecase.Type): List<String> {
+    override fun getAllTokenIssued(type: EsdtTokenType): List<String> {
         return requireNotNull(elrondProxy.getAllTokenIssued(type).data).tokens
     }
 
@@ -52,6 +49,14 @@ internal class EsdtRepositoryImpl(
             )
         )
         return response.toSpecialRoles()
+    }
+
+    override fun getAllRolesForTokens(address: Address): HashMap<String, List<String>> {
+        return requireNotNull(elrondProxy.getAllRolesForTokens(address).data).roles
+    }
+
+    override fun getTokensWithRole(address: Address, role: EsdtSpecialRole): List<String> {
+        return requireNotNull(elrondProxy.getTokensWithRole(address, role).data).tokens
     }
 
 }

@@ -3,6 +3,7 @@ package com.elrond.erdkotlin.data
 import com.elrond.erdkotlin.data.account.responses.GetAccountResponse
 import com.elrond.erdkotlin.data.account.responses.GetAddressTransactionsResponse
 import com.elrond.erdkotlin.data.networkconfig.GetNetworkConfigResponse
+import com.elrond.erdkotlin.data.nft.response.GetNftDataResponse
 import com.elrond.erdkotlin.data.transaction.responses.GetTransactionInfoResponse
 import com.elrond.erdkotlin.data.vm.responses.QueryContractDigitResponse
 import com.elrond.erdkotlin.data.vm.responses.QueryContractResponse
@@ -12,6 +13,7 @@ import com.elrond.erdkotlin.domain.account.models.Account
 import com.elrond.erdkotlin.domain.esdt.models.EsdtProperties
 import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRole
 import com.elrond.erdkotlin.domain.esdt.models.EsdtSpecialRoles
+import com.elrond.erdkotlin.domain.nft.models.NftData
 import com.elrond.erdkotlin.domain.transaction.models.TransactionInfo
 import com.elrond.erdkotlin.domain.transaction.models.TransactionOnNetwork
 import com.elrond.erdkotlin.domain.vm.query.integer.QueryContractDigitOutput
@@ -202,4 +204,18 @@ internal fun QueryContractOutput.toSpecialRoles(): EsdtSpecialRoles? {
     }
     return formattedData?.toMap()?.let { EsdtSpecialRoles(it) }
 
+}
+
+internal fun GetNftDataResponse.toDomain() = with(tokenData){
+    NftData(
+        attributes = attributes,
+        balance = balance,
+        creator = creator,
+        hash = hash,
+        name = name,
+        nonce = nonce,
+        royalties = royalties,
+        tokenIdentifier = tokenIdentifier,
+        uris = uris
+    )
 }

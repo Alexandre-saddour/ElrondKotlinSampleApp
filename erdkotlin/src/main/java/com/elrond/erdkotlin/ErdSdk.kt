@@ -4,6 +4,7 @@ import com.elrond.erdkotlin.data.account.AccountRepositoryImpl
 import com.elrond.erdkotlin.data.api.ElrondProxy
 import com.elrond.erdkotlin.data.esdt.EsdtRepositoryImpl
 import com.elrond.erdkotlin.data.networkconfig.NetworkConfigRepositoryImpl
+import com.elrond.erdkotlin.data.nft.NftRepositoryImpl
 import com.elrond.erdkotlin.data.transaction.TransactionRepositoryImpl
 import com.elrond.erdkotlin.data.vm.VmRepositoryImpl
 import com.elrond.erdkotlin.domain.account.GetAccountUsecase
@@ -18,6 +19,8 @@ import com.elrond.erdkotlin.domain.transaction.SignTransactionUsecase
 import com.elrond.erdkotlin.domain.dns.GetDnsRegistrationCostUsecase
 import com.elrond.erdkotlin.domain.esdt.*
 import com.elrond.erdkotlin.domain.esdt.management.*
+import com.elrond.erdkotlin.domain.nft.GetNftDataUsecase
+import com.elrond.erdkotlin.domain.nft.GetNftsRegisteredUsecase
 import com.elrond.erdkotlin.domain.sc.CallContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.QueryContractUsecase
 import com.elrond.erdkotlin.domain.vm.query.hex.QueryContractHexUsecase
@@ -66,6 +69,10 @@ object ErdSdk {
     fun getTransferEsdtUsecase() = TransferEsdtUsecase(sendTransactionUsecase())
     fun getUpgradeEsdtUsecase() = UpgradeEsdtUsecase(sendTransactionUsecase())
     fun getWipeAccountEsdtUsecase() = WipeAccountEsdtUsecase(sendTransactionUsecase())
+    fun getAllRolesForTokensUsecase() = GetAllRolesForTokensUsecase(esdtRepository)
+    fun getTokensWithRoleUsecase() = GetTokensWithRoleUsecase(esdtRepository)
+    fun getNftDataUsecase() = GetNftDataUsecase(nftRepository)
+    fun getNftsRegisteredUsecase() = GetNftsRegisteredUsecase(nftRepository)
     fun getDnsRegistrationCostUsecase() = GetDnsRegistrationCostUsecase(
         queryContractUsecase(),
         computeDnsAddressUsecase()
@@ -88,6 +95,7 @@ object ErdSdk {
     private val transactionRepository = TransactionRepositoryImpl(elrondProxy)
     private val vmRepository = VmRepositoryImpl(elrondProxy)
     private val esdtRepository = EsdtRepositoryImpl(elrondProxy, vmRepository)
+    private val nftRepository = NftRepositoryImpl(elrondProxy)
 }
 
 sealed class ElrondNetwork(open val url: String) {
