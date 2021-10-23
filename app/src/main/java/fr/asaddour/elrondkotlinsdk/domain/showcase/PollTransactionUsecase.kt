@@ -17,7 +17,7 @@ class PollTransactionUsecase @Inject constructor(
         withResults: Boolean = false,
         times: Int = Int.MAX_VALUE,
         initialDelay: Long = 100, // 0.1 second
-        maxDelay: Long = 1000,    // 1 second
+        maxDelay: Long = 3000,    // 2 second
         factor: Double = 2.0,
         predicate: (transactionInfo: TransactionInfo) -> Boolean
     ) = retry(times = times, initialDelay = initialDelay, maxDelay = maxDelay, factor = factor) {
